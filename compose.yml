@@ -1,0 +1,88 @@
+
+services:
+  queue:
+    image: redis:latest
+    container_name: redis_container
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+    ports:
+      - "6380:6379"
+    tty: true
+    stdin_open: true
+  rqueue-insight:
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+      - "5540:5540"
+    volumes:
+      - redis-insight:/data
+volumes:
+  redis-insight:
+  # web:
+  #   container_name: web
+  #   build: ./project
+  #   # network_mode: host
+  #   # ports:
+  #   #   - 8004:8000
+  #   command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
+  #   volumes:
+  #     - ./project:/usr/src/app
+  #   env_file: ".env"
+  #   # environment:
+  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   network_mode: host
+  #   depends_on:
+  #     - redis
+
+  # worker:
+  #   container_name: worker
+  #   build: ./project
+  #   command: celery -A selery_app.app:app worker --loglevel=info --logfile=logs/celery.log -P gevent
+  #   volumes:
+  #     - ./project:/usr/src/app
+  #   env_file: ".env"
+  #   # environment:
+  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   network_mode: host
+  #   depends_on:
+  #     - redis
+
+  # beat:
+  #   container_name: beat
+  #   build: ./project
+  #   command: celery -A selery_app.app:app beat --loglevel=info --logfile=logs/beat.log
+  #   volumes:
+  #     - ./project:/usr/src/app
+  #   env_file: ".env"
+  #   # environment:
+  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   network_mode: host
+  #   depends_on:
+  #     - redis
+  #     - worker
+      
+  # dashboard:
+  #   build: ./project
+  #   command: celery --broker=${CELERY_BROKER_URL} flower --port=5555
+  #   network_mode: host
+  #   # ports:
+  #   #   - 5556:5555
+  #   env_file: ".env"
+  #   # environment:
+  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   depends_on:
+  #     - web
+  #     - redis
+  #     - worker
+  #     - beat
+
+  # redis:
+  #   image: redis:latest
+  #   container_name: redis
+
