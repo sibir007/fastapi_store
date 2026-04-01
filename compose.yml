@@ -29,25 +29,25 @@ services:
     ports:
       - 8090:8080
 
-volumes:
-  pgdata:
-    driver: local
-  # web:
-  #   container_name: web
-  #   build: ./project
-  #   # network_mode: host
-  #   # ports:
-  #   #   - 8004:8000
-  #   command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
-  #   volumes:
-  #     - ./project:/usr/src/app
-  #   env_file: ".env"
-  #   # environment:
-  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
-  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
-  #   network_mode: host
-  #   depends_on:
-  #     - redis
+
+
+  store:
+    container_name: store
+    build: ./app
+    # network_mode: host
+    # ports:
+    #   - 8004:8000
+    command: python3 mod2.py
+    # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
+    # volumes:
+    #   - ./project:/usr/src/app
+    # env_file: ".env"
+    # # environment:
+    # #   - CELERY_BROKER_URL=redis://redis:6379/0
+    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    # network_mode: host
+    # depends_on:
+    #   - redis
 
   # worker:
   #   container_name: worker
@@ -98,3 +98,6 @@ volumes:
   #   image: redis:latest
   #   container_name: redis
 
+volumes:
+  pgdata:
+    driver: local
