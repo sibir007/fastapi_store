@@ -4,7 +4,13 @@ services:
     image: redis:latest
     container_name: redis
     ports:
-      - "6380:6379"
+      - "${REDIS_PORT}:6379"
+    # healthcheck:
+    #   test: ["CMD", "redis-cli", "ping"]
+    #   interval: 5s
+    #   timeout: 3s
+    #   retries: 5
+    #   start_period: 10s
   db:
     image: postgres
     container_name: postgres
@@ -20,24 +26,22 @@ services:
       # POSTGRES_DB: ${POSTGRES_DB} 
       PGDATA: /var/lib/postgresql/data/pgdata    
     ports:
-      - "5430:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/pgdata
   adminer:
     image: adminer
     restart: always
     ports:
-      - 8090:8080
-
-
+      - "${ADMINER_PORT}:8080"
 
   store:
     container_name: store
-    build: ./app
+    build: .
     # network_mode: host
     # ports:
     #   - 8004:8000
-    command: python3 mod2.py
+    command: python3 main_test.py
     # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
     # volumes:
     #   - ./project:/usr/src/app
@@ -45,9 +49,22 @@ services:
     # # environment:
     # #   - CELERY_BROKER_URL=redis://redis:6379/0
     # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    # network_mode: host
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: sync+restart
+          path: main_test.py
+          target: /app/main_test.py
+        - action: rebuild
+          path: requirements.txt
     # depends_on:
     #   - redis
+    # depends_on:
+    #   redis:
+    #     condition: service_healthy
 
   # worker:
   #   container_name: worker
