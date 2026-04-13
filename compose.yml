@@ -1,18 +1,18 @@
 
 services:
   queue:
-    image: redis:latest
+    image: redis:8.6.2
     container_name: redis
     ports:
       - "${REDIS_PORT}:6379"
-    # healthcheck:
-    #   test: ["CMD", "redis-cli", "ping"]
-    #   interval: 5s
-    #   timeout: 3s
-    #   retries: 5
-    #   start_period: 10s
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
   db:
-    image: postgres
+    image: postgres:18.3
     container_name: postgres
     restart: always
     # env_file:
@@ -45,7 +45,7 @@ services:
     # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
     # volumes:
     #   - ./project:/usr/src/app
-    # env_file: ".env"
+    env_file: ".env"
     # # environment:
     # #   - CELERY_BROKER_URL=redis://redis:6379/0
     # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
@@ -60,11 +60,33 @@ services:
           target: /app/main_test.py
         - action: rebuild
           path: requirements.txt
+  worker:
+    container_name: worker
+    build: .
+    # network_mode: host
+    # ports:
+    #   - 8004:8000
+    command: faststream run project.auth_worker:app
+    # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
+    # volumes:
+    #   - ./project:/usr/src/app
+    env_file: ".env"
+    # # environment:
+    # #   - CELERY_BROKER_URL=redis://redis:6379/0
+    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
     # depends_on:
     #   - redis
-    # depends_on:
-    #   redis:
-    #     condition: service_healthy
+    depends_on:
+      redis:
+        condition: service_healthy
 
   # worker:
   #   container_name: worker

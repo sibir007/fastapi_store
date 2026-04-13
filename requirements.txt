@@ -5,4 +5,6 @@ asyncpg==0.31.0
 alembic==1.18.4
 pydantic==2.12.5
 pydantic_settings==2.13.1
-
+faststream==0.6.7
+faststream[cli]==0.6.7
+faststream[redis]==0.6.7
