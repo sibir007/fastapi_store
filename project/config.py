@@ -11,7 +11,7 @@ print(f'load_dotenv: {ch}')
 
 class Settings(BaseSettings):
     REDIS_HOST: str
-    REDIS_PORT: int
+    REDIS_PORT: str
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int
@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     # ADMINER_PORT: int
+
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     @property
     def REDIS_URL(self) -> str:
@@ -28,10 +32,6 @@ class Settings(BaseSettings):
     def POSTGRES_URL(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
                     
-
-
-
-
 
 settings = Settings() # type: ignore
 

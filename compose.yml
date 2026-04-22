@@ -35,31 +35,31 @@ services:
     ports:
       - "${ADMINER_PORT}:8080"
 
-  store:
-    container_name: store
-    build: .
-    # network_mode: host
-    # ports:
-    #   - 8004:8000
-    command: python3 main_test.py
-    # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
-    # volumes:
-    #   - ./project:/usr/src/app
-    env_file: ".env"
-    # # environment:
-    # #   - CELERY_BROKER_URL=redis://redis:6379/0
-    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    network_mode: host
-    develop:
-      watch:
-        - action: sync+restart
-          path: project
-          target: /app/project
-        - action: sync+restart
-          path: main_test.py
-          target: /app/main_test.py
-        - action: rebuild
-          path: requirements.txt
+  # store:
+  #   container_name: store
+  #   build: .
+  #   # network_mode: host
+  #   # ports:
+  #   #   - 8004:8000
+  #   command: python3 main_test.py
+  #   # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
+  #   # volumes:
+  #   #   - ./project:/usr/src/app
+  #   env_file: ".env"
+  #   # # environment:
+  #   # #   - CELERY_BROKER_URL=redis://redis:6379/0
+  #   # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   network_mode: host
+  #   develop:
+  #     watch:
+  #       - action: sync+restart
+  #         path: project
+  #         target: /app/project
+  #       - action: sync+restart
+  #         path: main_test.py
+  #         target: /app/main_test.py
+  #       - action: rebuild
+  #         path: requirements.txt
   worker:
     container_name: worker
     build: .
@@ -85,8 +85,57 @@ services:
     # depends_on:
     #   - redis
     depends_on:
-      redis:
+      queue:
         condition: service_healthy
+  # store:
+  #   container_name: store
+  #   build: .
+  #   # network_mode: host
+  #   # ports:
+  #   #   - 8004:8000
+  #   command: python3 main_test.py
+  #   # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
+  #   # volumes:
+  #   #   - ./project:/usr/src/app
+  #   env_file: ".env"
+  #   # # environment:
+  #   # #   - CELERY_BROKER_URL=redis://redis:6379/0
+  #   # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  #   network_mode: host
+  #   develop:
+  #     watch:
+  #       - action: sync+restart
+  #         path: project
+  #         target: /app/project
+  #       - action: rebuild
+  #         path: requirements.txt
+  auth_api:
+    container_name: auth_api
+    build: .
+    # network_mode: host
+    # ports:
+    #   - 8004:8000
+    # command: faststream run project.auth_api:app
+    command: uvicorn project.auth_api:app --host 0.0.0.0 --port "${AUTH_API_PORT}"
+    # command: uvicorn project.auth_api:app --host 0.0.0.0 --reload
+    # volumes:
+    #   - ./project:/usr/src/app
+    env_file: ".env"
+    # # environment:
+    # #   - CELERY_BROKER_URL=redis://redis:6379/0
+    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+    depends_on:
+      - worker
+      # - queue:
+      #     condition: service_healthy
 
   # worker:
   #   container_name: worker
