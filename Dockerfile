@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY ./project ./project
-COPY ./main_test.py .
+# COPY ./main_test.py .

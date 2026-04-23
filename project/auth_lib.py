@@ -8,10 +8,10 @@ from pwdlib import PasswordHash
 import jwt
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
-from project.auth_schemas import AuthResoult, UserBase, UserInDB
+from project.auth_schemas import AuthBrokerResoult, TokenData, UserInDB
 
 
-type DB = dict[str, dict[str, str | bool]]
+type DB = dict[str, dict[str, str | bool | list[str]]]
 
 fake_users_db: DB = {
     "johndoe": {
@@ -20,6 +20,15 @@ fake_users_db: DB = {
         "email": "johndoe@example.com",
         "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$wagCPXjifgvUFBzq4hqe3w$CYaIb8sB+wtD+Vu/P4uod1+Qof8h+1g7bbDlBID48Rc",
         "disabled": False,
+        "permissions": ["user:read", "user:write"],
+    },
+    "john": {
+        "username": "john",
+        "full_name": "John",
+        "email": "john@example.com",
+        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$wagCPXjifgvUFBzq4hqe3w$CYaIb8sB+wtD+Vu/P4uod1+Qof8h+1g7bbDlBID48Rc",
+        "disabled": False,
+        "permissions": [],
     },
     "alice": {
         "username": "alice",
@@ -27,6 +36,7 @@ fake_users_db: DB = {
         "email": "alicechains@example.com",
         "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$g2/AV1zwopqUntPKJavBFw$BwpRGDCyUHLvHICnwijyX8ROGoiUPwNKZ7915MeYfCE",
         "disabled": True,
+        "permissions": [],
     },
 }
 
@@ -43,24 +53,30 @@ def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
 
 
-async def get_user(username: str) -> UserInDB | None:
+async def _get_user(username: str) -> UserInDB | None:
     if username in fake_users_db:
         user_dict = fake_users_db[username]
         return UserInDB(**user_dict) # type: ignore
     return None
 
 
+async def get_user(username: str) -> AuthBrokerResoult:
+    try:
+        user = await _get_user(username)
+    except Exception as e:
+        return AuthBrokerResoult(error=e.__str__())
+    return AuthBrokerResoult(user=user)
 
-async def authenticate_user(username: str, password: str) -> AuthResoult:
-    user = await get_user(username)
+async def authenticate_user(username: str, password: str) -> AuthBrokerResoult:
+    user = await _get_user(username)
     if not user:
 
-        return AuthResoult(error='Incorrect username or password')
+        return AuthBrokerResoult(error='Incorrect username or password')
     if user.disabled:
-        return AuthResoult(error='User is disabled')
+        return AuthBrokerResoult(error='User is disabled')
     if not verify_password(password, user.hashed_password):
-        return AuthResoult(error='Incorrect username or password')
-    return AuthResoult(user=user)
+        return AuthBrokerResoult(error='Incorrect username or password')
+    return AuthBrokerResoult(user=user)
 
 
 def create_access_token(data: dict[str, Any], expires_delta: timedelta, secret_key: str, algorithm: str) -> str:
@@ -70,7 +86,7 @@ def create_access_token(data: dict[str, Any], expires_delta: timedelta, secret_k
     encoded_jwt: str = jwt.encode(to_encode, secret_key, algorithm=algorithm)  # type: ignore
     return encoded_jwt
 
-def get_current_user_by_token(token: str) -> UserBase:
+def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
 
     authenticate_value = "Bearer"
     credentials_exception = HTTPException(
@@ -79,7 +95,7 @@ def get_current_user_by_token(token: str) -> UserBase:
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # type: ignore
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm]) # type: ignore
         username = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -88,8 +104,8 @@ def get_current_user_by_token(token: str) -> UserBase:
 
     except (InvalidTokenError, ValidationError):
         raise credentials_exception
-    user: UserBase = UserBase(username=username, scopes=token_scopes) # type: ignore
+    token_data: TokenData = TokenData(username=username, scopes=token_scopes) # type: ignore
 
-    return user
+    return token_data
 
 

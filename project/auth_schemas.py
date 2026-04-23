@@ -7,13 +7,14 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    username: str
+    # username: str | None = None
     scopes: list[str] = []
 
 
 class UserBase(BaseModel):
     username: str
-    scopes: list[str] = []
+    permissions: list[str] = []
 
 
 class User(UserBase):
@@ -29,6 +30,6 @@ class AuthUserData(BaseModel):
     password: str
 
 
-class AuthResoult(BaseModel):
+class AuthBrokerResoult(BaseModel):
     user: UserInDB | None = None
     error: str | None = None
