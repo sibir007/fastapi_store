@@ -8,8 +8,10 @@ from pwdlib import PasswordHash
 import jwt
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
-from project.auth_schemas import AuthBrokerResoult, TokenData, UserInDB
-
+from project.auth_schemas import TokenData, UserFilter
+from project.database.dao import UserDAO
+from project.database.models import MUser
+from sqlalchemy.ext.asyncio import AsyncSession
 
 type DB = dict[str, dict[str, str | bool | list[str]]]
 
@@ -41,7 +43,6 @@ fake_users_db: DB = {
 }
 
 
-
 password_hash = PasswordHash.recommended()
 
 
@@ -53,38 +54,22 @@ def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
 
 
-async def _get_user(username: str) -> UserInDB | None:
-    if username in fake_users_db:
-        user_dict = fake_users_db[username]
-        return UserInDB(**user_dict) # type: ignore
-    return None
+async def get_user_by_name(session: AsyncSession, username: str) -> MUser | None:
+
+    user_dao: UserDAO = UserDAO(session)
+    user: MUser | None = await user_dao.find_one_or_none(filters=UserFilter(username=username))  # type: ignore
+    return user  # type: ignore
 
 
-async def get_user(username: str) -> AuthBrokerResoult:
-    try:
-        user = await _get_user(username)
-    except Exception as e:
-        return AuthBrokerResoult(error=e.__str__())
-    return AuthBrokerResoult(user=user)
-
-async def authenticate_user(username: str, password: str) -> AuthBrokerResoult:
-    user = await _get_user(username)
-    if not user:
-
-        return AuthBrokerResoult(error='Incorrect username or password')
-    if user.disabled:
-        return AuthBrokerResoult(error='User is disabled')
-    if not verify_password(password, user.hashed_password):
-        return AuthBrokerResoult(error='Incorrect username or password')
-    return AuthBrokerResoult(user=user)
-
-
-def create_access_token(data: dict[str, Any], expires_delta: timedelta, secret_key: str, algorithm: str) -> str:
+def create_access_token(
+    data: dict[str, Any], expires_delta: timedelta, secret_key: str, algorithm: str
+) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
     encoded_jwt: str = jwt.encode(to_encode, secret_key, algorithm=algorithm)  # type: ignore
     return encoded_jwt
+
 
 def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
 
@@ -95,7 +80,7 @@ def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
         headers={"WWW-Authenticate": authenticate_value},
     )
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm]) # type: ignore
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])  # type: ignore
         username = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -104,8 +89,9 @@ def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
 
     except (InvalidTokenError, ValidationError):
         raise credentials_exception
-    token_data: TokenData = TokenData(username=username, scopes=token_scopes) # type: ignore
+    token_data: TokenData = TokenData(username=username, scopes=token_scopes)  # type: ignore
 
     return token_data
 
 
+# async def register_user(user:)

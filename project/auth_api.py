@@ -10,19 +10,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from faststream.redis import RedisBroker
 from faststream.redis.fastapi import RedisRouter
 from pwdlib import PasswordHash
+from pydantic import BaseModel # type: ignore
+
 
 
 from project.config import settings
 
-from project.auth_schemas import AuthUserData, Token, User
-
+from project.auth_schemas import AuthUserData, Token, UserBrokerResult, UserOut, UserIn
 from project.auth_lib import (
-    AuthBrokerResoult,
     TokenData,
     verifi_token, 
 
     create_access_token
     )
+from project.exceptions import HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION, raise_exaption
 
 # to get a string like this run:
 # openssl rand -hex 32
@@ -35,7 +36,7 @@ password_hash = PasswordHash.recommended()
 # DUMMY_HASH = password_hash.hash("dummypassword")
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="token",
+    tokenUrl="api/auth/token",
     scopes={"me": "Read information about the current user.", 
             "items": "Read items.",
             "admin_permissions": "Insert administrator permissions into the token if the user has them"},
@@ -45,8 +46,8 @@ oauth2_scheme = OAuth2PasswordBearer(
 app = FastAPI()
 
 
-
 broker_router = RedisRouter(settings.REDIS_URL)
+
 
 def broker() -> RedisBroker:
     return broker_router.broker
@@ -68,6 +69,7 @@ async def verifiy_and_get_token_data(
                 )
     return token_data
 
+
 async def get_token_username(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
 ) -> str:
@@ -77,38 +79,29 @@ async def get_token_username(
 async def get_current_user(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
     broker: Annotated[RedisBroker, Depends(broker)]
-)-> User:
+)-> UserOut:
     
-    user_response = await broker.request(
+    broker_response = await broker.request(
         token_data.username, 
         list='user'
     )
-    user_resoult: dict[str, Any] | None = await user_response.decode()
+    broker_resoult: dict[str, Any] | None = await broker_response.decode()
 
-    if user_resoult is None:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Authentication service error",
-        )
+    if broker_resoult is None:
+        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION()
     
-    user_resoult_obj: AuthBrokerResoult = AuthBrokerResoult(**user_resoult)
-    if user_resoult_obj.error:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=user_resoult_obj.error,
-        )
+    broker_resoult_obj: UserBrokerResult = UserBrokerResult(**broker_resoult)
+    if broker_resoult_obj.exeption:
+        raise_exaption(broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes)
 
-    user = user_resoult_obj.user
-    # user = await authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Incorrect username in token",
-        )
+    user = broker_resoult_obj.result
+    if not user: # should not happen, but just in case
+        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION("Internal server error during user retrieval, incompatible service state")
 
-    return User(**user.model_dump())
+    return UserOut(**user.model_dump())
 
-@broker_router.post("/token")
+
+@broker_router.post("/api/auth/token/")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     broker: Annotated[RedisBroker, Depends(broker)]
@@ -122,27 +115,18 @@ async def login_for_access_token(
     auth_resoult: dict[str, Any] | None = await auth_response.decode()
 
     if auth_resoult is None:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Authentication service error",
-        )
+        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION("Internal server error during authentication")
     
-    auth_resoult_obj: AuthBrokerResoult = AuthBrokerResoult(**auth_resoult)
-    if auth_resoult_obj.error:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=auth_resoult_obj.error,
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    auth_resoult_obj: UserBrokerResult = UserBrokerResult(**auth_resoult)
+    if auth_resoult_obj.exeption:
+        raise_exaption(auth_resoult_obj.exeption.code, auth_resoult_obj.exeption.detailes)
 
-    user = auth_resoult_obj.user
-    # user = await authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    user = auth_resoult_obj.result
+
+    if not user:# should not happen, but just in case
+        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION("Internal server error during authentication, incompatible service state")
+     
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     if "admin_permissions" in form_data.scopes:
         form_data.scopes.extend(user.permissions)
@@ -154,23 +138,52 @@ async def login_for_access_token(
     )
     return Token(access_token=access_token, token_type="bearer")
 
-@app.get("/token")
+
+@app.get("/api/auth/token/")
 async def get_token_data(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
 ) -> TokenData:
     return token_data
 
-@app.get("/token/username")
+
+@app.post("/api/auth/register/")
+async def register_user(
+    user_data: UserIn,
+    broker: Annotated[RedisBroker, Depends(broker)]
+) -> UserOut:
+    
+    broker_response = await broker.request(
+        user_data, 
+        list='register'
+    )
+    broker_resoult: dict[str, Any] | None = await broker_response.decode()
+
+    if broker_resoult is None:
+        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION("Internal server error during registration")
+
+    broker_resoult_obj: UserBrokerResult = UserBrokerResult(**broker_resoult)
+    if broker_resoult_obj.exeption:
+        raise_exaption(broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes)
+
+    user = broker_resoult_obj.result
+
+    if not user: # should not happen, but just in case
+        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION("Internal server error during registration, incompatible service state")
+
+    return user
+
+
+@app.get("/api/auth/username")
 async def get_token_user(
     username: Annotated[str, Depends(get_token_username)],
 ) -> str:
     return username
 
 
-@app.get("/users/me/")
+@app.get("/api/auth/profile")
 async def read_users_me(
-    current_user: Annotated[User, Security(get_current_user, scopes=["me"])],
-) -> User:
+    current_user: Annotated[UserOut, Security(get_current_user, scopes=["me"])],
+) -> UserOut:
     return current_user
 
 
@@ -189,6 +202,7 @@ async def add_process_time_header(request: Request, call_next: Callable[[Request
     process_time = time.perf_counter() - start_time
     response.headers["X-Process-Time"] = str(process_time)
     return response
+
 
 app.add_middleware(
     CORSMiddleware,

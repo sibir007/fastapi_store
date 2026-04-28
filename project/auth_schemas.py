@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class Token(BaseModel):
@@ -14,22 +14,42 @@ class TokenData(BaseModel):
 
 class UserBase(BaseModel):
     username: str
+    full_name: str | None = None
+    email: EmailStr
+
+
+class UserIn(UserBase):
+    password: str
+
+
+class UserInDB(UserBase):
+    hashed_password: str
+
+
+class UserOut(UserBase):
     permissions: list[str] = []
-
-
-class User(UserBase):
-    email: str | None = None
     disabled: bool = False
 
-
-class UserInDB(User):
-    hashed_password: str
 
 class AuthUserData(BaseModel):
     username: str
     password: str
 
 
-class AuthBrokerResoult(BaseModel):
-    user: UserInDB | None = None
-    error: str | None = None
+class BrokerExeption(BaseModel):
+    code: int
+    detailes: str
+
+
+class BorkerResoultBase(BaseModel):
+    exeption: BrokerExeption | None = None
+
+
+class UserBrokerResult(BorkerResoultBase):
+    result: UserOut | None = None
+
+class UserFilter(BaseModel):
+    id: int | None = None
+    username: str | None = None
+    full_name: EmailStr | None = None
+    email: str | None = None
