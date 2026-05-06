@@ -1,7 +1,7 @@
-from typing import Iterable
+from typing import Iterable, cast
 
 from project.database.dao import PermissionDAO, UserDAO
-from project.database.models import MBase, Permission
+from project.database.models import MBase, MPermission, Permission, MUser
 from project.database.session import async_session_maker, engine
 
 
@@ -30,12 +30,41 @@ async def init_db():
         await connection.run_sync(MBase.metadata.create_all)
 
 
-async def load_users(users: Iterable[UserInDB]) -> list[UserOut]:
+async def create_users(users: Iterable[UserInDB]) -> list[UserOut]:
 
     async with async_session_maker() as session:
         users_dao = UserDAO(session)
         users_m = await users_dao.add_new_users(users)
         out_result = [UserOut(**um.to_dict()) for um in users_m]  
         await session.commit()
+
+    return out_result
+
+
+async def create_update_superuser(superuser: UserInDB) -> UserOut:
+
+    async with async_session_maker() as session:
+        users_dao = UserDAO(session)
+        user_m = await users_dao.get_user_by_name("superuser")
+        if user_m:
+            user_m.full_name = superuser.full_name
+            user_m.email = superuser.email
+            user_m.hashed_password = superuser.hashed_password
+            user_m.disabled = False
+            user_m.permissions.clear()
+            await session.flush()
+        else:
+            user_m = cast(MUser,await users_dao.add(superuser))
+        # await session.flush()
+        user_m = cast(MUser, await users_dao.get_user_by_name("superuser"))
+        permissions_dao = PermissionDAO(session)
+        all_permissions = cast(Iterable[MPermission], await permissions_dao.find_all())
+        # user_m = await users_dao.get_user_by_name("superuser")
+        user_m.permissions.extend(all_permissions)
+        await session.commit()
+        # user_m = await users_dao.get_user_by_name("superuser")
+        # user_m = cast(MUser, await users_dao.get_user_by_name("superuser"))
+        ps: list[str] = [p.name.name for p in user_m.permissions]
+        out_result = UserOut(**user_m.to_dict(), permissions=ps)
 
     return out_result

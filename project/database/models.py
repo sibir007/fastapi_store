@@ -8,7 +8,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from typing_extensions import Annotated
 
-
 intpk = Annotated[int, mapped_column(primary_key=True)]
 timestamp = Annotated[
     datetime,
@@ -55,7 +54,7 @@ class MBase(AsyncAttrs, DeclarativeBase):
             if not exclude_none or value is not None:
                 result[column.key] = value
 
-        return result # type: ignore
+        return result  # type: ignore
 
 
 class MProduct(MBase):
@@ -72,8 +71,8 @@ class MProduct(MBase):
 user_permission_association_table = Table(
     "users_permissions_association_table",
     MBase.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),  # type: ignore
-    Column("permission_id", ForeignKey("permissions.id"), primary_key=True),  # type: ignore
+    Column("user_id", ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),  # type: ignore
+    Column("permission_id", ForeignKey("permissions.id", ondelete="CASCADE"), primary_key=True),  # type: ignore
 )
 
 
@@ -86,8 +85,12 @@ class MUser(MBase):
     hashed_password: Mapped[str]
     disabled: Mapped[bool] = mapped_column(default=False)
     permissions: Mapped[list["MPermission"]] = relationship(
-        secondary=user_permission_association_table, back_populates="users"
+        secondary=user_permission_association_table,
+        back_populates="users",
+        lazy="selectin",
+        cascade="all, delete",
     )
+
 
 class Permission(enum.Enum):
     USER_READ = "read user"
@@ -96,6 +99,7 @@ class Permission(enum.Enum):
     PRODUCT_CREATE = "create product"
     PRODUCT_UPDATE = "update product"
 
+
 class MPermission(MBase):
     __tablename__ = "permissions"
 
@@ -103,5 +107,7 @@ class MPermission(MBase):
     desctription: Mapped[str | None]
 
     users: Mapped[list[MUser]] = relationship(
-        secondary=user_permission_association_table, back_populates="permissions"
+        secondary=user_permission_association_table, 
+        back_populates="permissions",
+        cascade="all, delete",
     )

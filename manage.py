@@ -16,9 +16,10 @@ from project.auth_schemas import SPermissionIn, UserIn, UserInDB, UserOut
 
 # from project.database.session import async_session_maker
 from project.database.dao_util import (
+    create_update_superuser,
     init_db,
     load_permissions,
-    load_users as async_load_users,
+    create_users as async_load_users,
 )
 import asyncio
 
@@ -38,13 +39,6 @@ app = typer.Typer()
 async def _add_permissions_to_user(username: str, permission: SPermissionIn):
 
     pass
-
-
-# async def load_users(users_file: str = USER_FILE) -> None:
-
-
-#     users_dict = json.load(open(users_file))
-#     pass
 
 
 async def _load_users(users_file: str | Path) -> list[UserOut]:
@@ -86,10 +80,6 @@ def load_users(
     typer.echo("users loaded")
 
 
-async def add_permissions_to_user(username: str, permission: SPermissionIn):
-
-    pass
-
 
 async def async_init_db_load_permissions():
     """
@@ -113,24 +103,40 @@ def init_db_load_permissions():
     asyncio.run(async_init_db_load_permissions())
 
 
+async def async_create_superuser(email: str, password: str) -> UserOut:
+    """
+    create superuser (update if exists), add all permissions, username always "superuser"
+    """
+    superuser = UserInDB(
+        username="superuser",
+        full_name="Super User",
+        email=email,
+        hashed_password=get_password_hash(password),
+    )
+    return await create_update_superuser(superuser)
+
+
 @app.command()
 # app.command(help="delete superuser, create new superuser, add add superuser permissions")
 def create_superuser(
-    username: str,
+    email: Annotated[str, typer.Option(prompt="Email of the superuser")],
     password: Annotated[
         str,
         typer.Option(
             prompt=True,
             confirmation_prompt=True,
             hide_input=True,
-            help="not show anything on the screen while typing the password",
+            help="Password for the superuser",
         ),
     ],
 ):
     """
-    delete superuser, create new superuser, add add superuser permissions
+    create superuser (update if exists), add all permissions, username always "superuser"
     """
-    pass
+    # print(f"email: {email}")
+    # print(f"password: {password}")
+    su = asyncio.run(async_create_superuser(email, password))
+    typer.echo(f"superuser created: {su}")
 
 
 def _gen_users(ammount: int) -> list[UserIn]:
@@ -174,5 +180,3 @@ def gen_users(
 
 if __name__ == "__main__":
     app()
-
-
