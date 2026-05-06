@@ -11,3 +11,6 @@ faststream[cli]==0.6.7
 faststream[redis]==0.6.7
 pyjwt==2.12.1
 pwdlib[argon2]==0.3.0
+# Faker==40.15.0 for development
+# aiofiles==25.1.0 for development
+# types-aiofiles==25.1.0.20260409 for development

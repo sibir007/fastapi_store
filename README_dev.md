@@ -6,11 +6,14 @@ redis://username:password@localhost:6380/0
 ## DOCKER
 
 ```bash
-sudo docker compose down -v
+sudo docker compose down -v  # Stops and removes containers, networks, and all named and anonymous volumes defined in your compose.yaml file
 sudo docker compose up -d --force-recreate --remove-orphans
 sudo docker exec -it redis_container redis-cli
 sudo docker compose up --build --watch  store
 sudo docker compose up --watch  store
+sudo docker compose logs -f db # connect to cervise logs
+
+
 ```
 
 ## ALEMBIC

@@ -1,4 +1,4 @@
-from typing import Any, Sequence, TypeVar, Generic, Type, cast
+from typing import Any, Iterable, Sequence, TypeVar, Generic, Type, cast
 
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
@@ -12,9 +12,11 @@ from sqlalchemy import (
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from project.auth_schemas import UserFilter
-from project.database.models import MBase, MUser
+from project.auth_schemas import SPermissionIn, UserFilter, UserInDB
+from project.database.models import MBase, MPermission, MUser
 import logging
+
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,7 @@ T = TypeVar("T", bound=MBase)
 
 
 class BaseDAO(Generic[T]):
+    # model: T
     model: Type[T]
 
     def __init__(self, session: AsyncSession) -> None:
@@ -89,7 +92,7 @@ class BaseDAO(Generic[T]):
             logger.error(f"Ошибка при добавлении записи: {e}")
             raise
 
-    async def add_many(self, instances: list[BaseModel]) -> list[T]:
+    async def add_many(self, instances: Iterable[BaseModel]) -> list[T]:
         values_list = [item.model_dump(exclude_unset=True) for item in instances]
         logger.info(
             f"Добавление нескольких записей {self.model.__name__}. Количество: {len(values_list)}"
@@ -156,7 +159,7 @@ class BaseDAO(Generic[T]):
             logger.error(f"Ошибка при подсчете записей: {e}")
             raise
 
-    async def bulk_update(self, records: list[BaseModel]) -> int:
+    async def bulk_update(self, records: Iterable[BaseModel]) -> int:
         logger.info(f"Массовое обновление записей {self.model.__name__}")
         try:
             updated_count = 0
@@ -189,3 +192,61 @@ class UserDAO(BaseDAO):  # type: ignore
 
         user: MUser | None = cast(MUser, await self.find_one_or_none(filters=UserFilter(username=username)))
         return user 
+
+
+    async def add_new_users(self, users: Iterable[UserInDB]) -> list[MUser]:
+        return await self.add_many(users) # type: ignore
+
+    
+    async def add_permission_to_user(self, username: str, permission: SPermissionIn):
+
+        user: MUser | None = cast(MUser | None, await self.find_one_or_none(filters=UserFilter(username=username)))
+        if not user:
+            logger.error(f"Пользователь с именем {username} не найден.")
+            raise ValueError(f"Пользователь с именем {username} не найден.")
+
+        permission_dao = PermissionDAO(self._session)
+        perm: MPermission | None = cast(MPermission | None, await permission_dao.find_one_or_none(filters=SPermissionIn(name=permission.name)))
+        if not perm:
+            logger.error(f"Разрешение {permission.name} не найдено.")
+            return user
+        
+        if perm in user.permissions:
+            logger.warning(f"Пользователь {username} уже имеет разрешение {permission.name}.")
+            return user
+
+        user.permissions.append(perm)
+        await self._session.flush()
+        return user
+    
+    async def add_permissions_to_user(self, username: str, permissions: Iterable[SPermissionIn]):
+
+        user: MUser | None = cast(MUser | None, await self.find_one_or_none(filters=UserFilter(username=username)))
+        if not user:
+            logger.error(f"Пользователь с именем {username} не найден.")
+            raise ValueError(f"Пользователь с именем {username} не найден.")
+
+        permission_dao = PermissionDAO(self._session)
+        for permission in permissions:
+            perm: MPermission | None = cast(MPermission | None, await permission_dao.find_one_or_none(filters=SPermissionIn(name=permission.name)))
+            if not perm:
+                logger.error(f"Разрешение {permission} не найдено.")
+                continue
+            if perm in user.permissions:
+                logger.warning(f"Пользователь {username} уже имеет разрешение {permission}.")
+                continue
+            user.permissions.append(perm)
+            await self._session.flush()
+        return user
+    
+
+
+class PermissionDAO(BaseDAO): # type: ignore
+    model = MPermission
+
+    async def add_permissions(self, permissions: Iterable[SPermissionIn]) -> list[MPermission]:
+        return cast(list[MPermission], await self.add_many(permissions))
+    
+    async def add_permission(self, permission: SPermissionIn) -> MPermission:
+        return cast(MPermission, await self.add(permission))
+    

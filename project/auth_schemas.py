@@ -53,3 +53,10 @@ class UserFilter(BaseModel):
     username: str | None = None
     full_name: EmailStr | None = None
     email: str | None = None
+
+class SPermissionIn(BaseModel):
+    name: str
+    desctription: str | None = None
+
+class SPermissionOut(SPermissionIn):
+    id: int
