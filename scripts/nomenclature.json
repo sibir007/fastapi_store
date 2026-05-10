@@ -1,0 +1,532 @@
+[
+    {
+        "name": "Nike Premium Monitor",
+        "description": "A handcrafted smartwatch made with high-quality wood.",
+        "products": [
+            {
+                "id": 155,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "18823.77",
+                "remainder": 73,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            },
+            {
+                "id": 163,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "19867.74",
+                "remainder": 27,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            },
+            {
+                "id": 165,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "16903.8",
+                "remainder": 14,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            },
+            {
+                "id": 166,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "18990.13",
+                "remainder": 15,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            },
+            {
+                "id": 169,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "19121.64",
+                "remainder": 2,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            },
+            {
+                "id": 184,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "16317.51",
+                "remainder": 29,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            },
+            {
+                "id": 199,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 31,
+                "cost_price": "20329.51",
+                "remainder": 48,
+                "name": "Nike Premium Monitor",
+                "description": "A handcrafted smartwatch made with high-quality wood."
+            }
+        ],
+        "id": 31,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Levi's Portable Mouse",
+        "description": "A vintage backpack made with high-quality cotton.",
+        "products": [
+            {
+                "id": 152,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "52663.57",
+                "remainder": 7,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 153,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "52887.71",
+                "remainder": 23,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 156,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "48355.67",
+                "remainder": 74,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 164,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "53905.75",
+                "remainder": 89,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 175,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "51503.13",
+                "remainder": 24,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 176,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "51928.75",
+                "remainder": 19,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 186,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "61860.56",
+                "remainder": 82,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            },
+            {
+                "id": 189,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 32,
+                "cost_price": "58175.08",
+                "remainder": 100,
+                "name": "Levi's Portable Mouse",
+                "description": "A vintage backpack made with high-quality cotton."
+            }
+        ],
+        "id": 32,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Apple Classic Sneakers",
+        "description": "A eco-friendly headphones made with high-quality carbon fiber.",
+        "products": [
+            {
+                "id": 181,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 33,
+                "cost_price": "43819.51",
+                "remainder": 87,
+                "name": "Apple Classic Sneakers",
+                "description": "A eco-friendly headphones made with high-quality carbon fiber."
+            },
+            {
+                "id": 191,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 33,
+                "cost_price": "44287.98",
+                "remainder": 5,
+                "name": "Apple Classic Sneakers",
+                "description": "A eco-friendly headphones made with high-quality carbon fiber."
+            }
+        ],
+        "id": 33,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Philips High-Performance Monitor",
+        "description": "A high-performance blender made with high-quality silicone.",
+        "products": [
+            {
+                "id": 157,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 34,
+                "cost_price": "4711.61",
+                "remainder": 54,
+                "name": "Philips High-Performance Monitor",
+                "description": "A high-performance blender made with high-quality silicone."
+            },
+            {
+                "id": 161,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 34,
+                "cost_price": "5394.85",
+                "remainder": 38,
+                "name": "Philips High-Performance Monitor",
+                "description": "A high-performance blender made with high-quality silicone."
+            },
+            {
+                "id": 178,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 34,
+                "cost_price": "5099.37",
+                "remainder": 34,
+                "name": "Philips High-Performance Monitor",
+                "description": "A high-performance blender made with high-quality silicone."
+            },
+            {
+                "id": 188,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 34,
+                "cost_price": "5227.62",
+                "remainder": 64,
+                "name": "Philips High-Performance Monitor",
+                "description": "A high-performance blender made with high-quality silicone."
+            },
+            {
+                "id": 197,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 34,
+                "cost_price": "4949.12",
+                "remainder": 38,
+                "name": "Philips High-Performance Monitor",
+                "description": "A high-performance blender made with high-quality silicone."
+            }
+        ],
+        "id": 34,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Philips Portable Speaker",
+        "description": "A handcrafted fitness tracker made with high-quality wool.",
+        "products": [
+            {
+                "id": 170,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 35,
+                "cost_price": "78891.73",
+                "remainder": 61,
+                "name": "Philips Portable Speaker",
+                "description": "A handcrafted fitness tracker made with high-quality wool."
+            },
+            {
+                "id": 183,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 35,
+                "cost_price": "79870.35",
+                "remainder": 39,
+                "name": "Philips Portable Speaker",
+                "description": "A handcrafted fitness tracker made with high-quality wool."
+            },
+            {
+                "id": 198,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 35,
+                "cost_price": "85663.86",
+                "remainder": 87,
+                "name": "Philips Portable Speaker",
+                "description": "A handcrafted fitness tracker made with high-quality wool."
+            }
+        ],
+        "id": 35,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Levi's Heavy-Duty Gaming Chair",
+        "description": "A limited edition blender made with high-quality stainless steel.",
+        "products": [
+            {
+                "id": 162,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 36,
+                "cost_price": "73048.75",
+                "remainder": 4,
+                "name": "Levi's Heavy-Duty Gaming Chair",
+                "description": "A limited edition blender made with high-quality stainless steel."
+            },
+            {
+                "id": 168,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 36,
+                "cost_price": "73265.47",
+                "remainder": 4,
+                "name": "Levi's Heavy-Duty Gaming Chair",
+                "description": "A limited edition blender made with high-quality stainless steel."
+            },
+            {
+                "id": 172,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 36,
+                "cost_price": "66454.0",
+                "remainder": 73,
+                "name": "Levi's Heavy-Duty Gaming Chair",
+                "description": "A limited edition blender made with high-quality stainless steel."
+            },
+            {
+                "id": 179,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 36,
+                "cost_price": "72889.65",
+                "remainder": 85,
+                "name": "Levi's Heavy-Duty Gaming Chair",
+                "description": "A limited edition blender made with high-quality stainless steel."
+            },
+            {
+                "id": 192,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 36,
+                "cost_price": "70058.07",
+                "remainder": 16,
+                "name": "Levi's Heavy-Duty Gaming Chair",
+                "description": "A limited edition blender made with high-quality stainless steel."
+            }
+        ],
+        "id": 36,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Logitech Deluxe Laptop",
+        "description": "A organic keyboard made with high-quality silicone.",
+        "products": [
+            {
+                "id": 160,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 37,
+                "cost_price": "77245.09",
+                "remainder": 64,
+                "name": "Logitech Deluxe Laptop",
+                "description": "A organic keyboard made with high-quality silicone."
+            },
+            {
+                "id": 180,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 37,
+                "cost_price": "81426.15",
+                "remainder": 94,
+                "name": "Logitech Deluxe Laptop",
+                "description": "A organic keyboard made with high-quality silicone."
+            },
+            {
+                "id": 190,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 37,
+                "cost_price": "72853.4",
+                "remainder": 99,
+                "name": "Logitech Deluxe Laptop",
+                "description": "A organic keyboard made with high-quality silicone."
+            },
+            {
+                "id": 195,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 37,
+                "cost_price": "76163.12",
+                "remainder": 3,
+                "name": "Logitech Deluxe Laptop",
+                "description": "A organic keyboard made with high-quality silicone."
+            }
+        ],
+        "id": 37,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Dell Professional Air Purifier",
+        "description": "A wireless air purifier made with high-quality cashmere.",
+        "products": [
+            {
+                "id": 158,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 38,
+                "cost_price": "28075.8",
+                "remainder": 44,
+                "name": "Dell Professional Air Purifier",
+                "description": "A wireless air purifier made with high-quality cashmere."
+            },
+            {
+                "id": 177,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 38,
+                "cost_price": "28178.24",
+                "remainder": 86,
+                "name": "Dell Professional Air Purifier",
+                "description": "A wireless air purifier made with high-quality cashmere."
+            },
+            {
+                "id": 182,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 38,
+                "cost_price": "25807.55",
+                "remainder": 99,
+                "name": "Dell Professional Air Purifier",
+                "description": "A wireless air purifier made with high-quality cashmere."
+            },
+            {
+                "id": 185,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 38,
+                "cost_price": "26591.56",
+                "remainder": 7,
+                "name": "Dell Professional Air Purifier",
+                "description": "A wireless air purifier made with high-quality cashmere."
+            },
+            {
+                "id": 187,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 38,
+                "cost_price": "31000.93",
+                "remainder": 82,
+                "name": "Dell Professional Air Purifier",
+                "description": "A wireless air purifier made with high-quality cashmere."
+            },
+            {
+                "id": 194,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 38,
+                "cost_price": "26205.68",
+                "remainder": 89,
+                "name": "Dell Professional Air Purifier",
+                "description": "A wireless air purifier made with high-quality cashmere."
+            }
+        ],
+        "id": 38,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Nike Deluxe Speaker",
+        "description": "A limited edition fitness tracker made with high-quality nylon.",
+        "products": [
+            {
+                "id": 151,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 39,
+                "cost_price": "55312.83",
+                "remainder": 44,
+                "name": "Nike Deluxe Speaker",
+                "description": "A limited edition fitness tracker made with high-quality nylon."
+            },
+            {
+                "id": 193,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 39,
+                "cost_price": "55094.01",
+                "remainder": 58,
+                "name": "Nike Deluxe Speaker",
+                "description": "A limited edition fitness tracker made with high-quality nylon."
+            },
+            {
+                "id": 196,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 39,
+                "cost_price": "50508.96",
+                "remainder": 86,
+                "name": "Nike Deluxe Speaker",
+                "description": "A limited edition fitness tracker made with high-quality nylon."
+            }
+        ],
+        "id": 39,
+        "created": "2026-05-10T12:56:26.368913Z"
+    },
+    {
+        "name": "Samsung Ultra Water Bottle",
+        "description": "A eco-friendly backpack made with high-quality wood.",
+        "products": [
+            {
+                "id": 154,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "23963.17",
+                "remainder": 63,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            },
+            {
+                "id": 159,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "22783.28",
+                "remainder": 57,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            },
+            {
+                "id": 167,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "21522.0",
+                "remainder": 45,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            },
+            {
+                "id": 171,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "23494.86",
+                "remainder": 45,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            },
+            {
+                "id": 173,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "23658.75",
+                "remainder": 42,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            },
+            {
+                "id": 174,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "23082.27",
+                "remainder": 21,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            },
+            {
+                "id": 200,
+                "created": "2026-05-10T12:56:26.388602Z",
+                "nom_id": 40,
+                "cost_price": "22308.37",
+                "remainder": 69,
+                "name": "Samsung Ultra Water Bottle",
+                "description": "A eco-friendly backpack made with high-quality wood."
+            }
+        ],
+        "id": 40,
+        "created": "2026-05-10T12:56:26.368913Z"
+    }
+]

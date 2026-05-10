@@ -8,10 +8,10 @@ from pwdlib import PasswordHash
 import jwt
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
-from project.auth_schemas import TokenData, UserFilter
-from project.database.dao import UserDAO
-from project.database.models import MUser
-from sqlalchemy.ext.asyncio import AsyncSession
+from project.auth_schemas import TokenData
+# from project.database.dao import UserDAO
+# from project.database.models import MUser
+# from sqlalchemy.ext.asyncio import AsyncSession
 
 type DB = dict[str, dict[str, str | bool | list[str]]]
 
@@ -54,11 +54,11 @@ def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
 
 
-async def get_user_by_name(session: AsyncSession, username: str) -> MUser | None:
+# async def get_user_by_name(session: AsyncSession, username: str) -> MUser | None:
 
-    user_dao: UserDAO = UserDAO(session)
-    user: MUser | None = await user_dao.find_one_or_none(filters=UserFilter(username=username))  # type: ignore
-    return user  # type: ignore
+#     user_dao: UserDAO = UserDAO(session)
+#     user: MUser | None = await user_dao.find_one_or_none(filters=UserFilter(username=username))  # type: ignore
+#     return user  # type: ignore
 
 
 def create_access_token(

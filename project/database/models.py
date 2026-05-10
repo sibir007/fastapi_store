@@ -3,7 +3,7 @@ import enum
 from decimal import Decimal
 from typing import Any
 import uuid
-from sqlalchemy import Column, ForeignKey, Table, func, inspect
+from sqlalchemy import Column, DateTime, ForeignKey, Table, func, inspect
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from typing_extensions import Annotated
@@ -11,7 +11,7 @@ from typing_extensions import Annotated
 intpk = Annotated[int, mapped_column(primary_key=True)]
 timestamp = Annotated[
     datetime,
-    mapped_column(nullable=False, server_default=func.UTC_TIMESTAMP()),
+    mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False),
 ]
 str_uniq = Annotated[str, mapped_column(unique=True, nullable=False)]
 
@@ -57,11 +57,34 @@ class MBase(AsyncAttrs, DeclarativeBase):
         return result  # type: ignore
 
 
+class MNomenclature(MBase):
+    __tablename__ = "nomenclature"
+
+    created: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    name: Mapped[str_uniq]
+    description: Mapped[str | None]
+    booked: Mapped[int] = mapped_column(default=0)
+    products: Mapped[list["MProduct"]] = relationship(
+        "MProduct",
+        back_populates="nomenclature",
+        lazy="selectin",
+        cascade="all, delete",
+    )
+
+
 class MProduct(MBase):
     __tablename__ = "products"
 
-    description: Mapped[str | None]
-    cost_price: Mapped[Decimal] = mapped_column(nullable=False)
+    created: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    # created: Mapped[timestamp]
+    nom_id: Mapped[int] = mapped_column(ForeignKey("nomenclature.id", ondelete="CASCADE"), nullable=False)
+    nomenclature: Mapped[MNomenclature] = relationship(
+        MNomenclature,
+        back_populates="products",
+        lazy="selectin",
+    )
+    cost_price: Mapped[Decimal]
+    remainder: Mapped[int]
 
     @property
     def user_price(self):
@@ -107,7 +130,7 @@ class MPermission(MBase):
     desctription: Mapped[str | None]
 
     users: Mapped[list[MUser]] = relationship(
-        secondary=user_permission_association_table, 
+        secondary=user_permission_association_table,
         back_populates="permissions",
         cascade="all, delete",
     )

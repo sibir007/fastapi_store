@@ -1,4 +1,4 @@
-from typing import Any, Iterable, Sequence, TypeVar, Generic, Type, cast
+from typing import Any, Iterable, TypeVar, Generic, Type, cast
 
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
@@ -11,13 +11,12 @@ from sqlalchemy import (
 )
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
 # from sqlalchemy.orm import selectinload
 
-from project.auth_schemas import SPermissionIn, UserFilter, UserInDB
-from project.database.models import MBase, MPermission, MUser
+from project.auth_schemas import SPermissionIn, UserFilter, SUserInDB
+from project.database.models import MBase, MNomenclature, MPermission, MProduct, MUser
 import logging
-
-
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +60,7 @@ class BaseDAO(Generic[T]):
             logger.error(f"Ошибка при поиске записи по фильтрам {filter_dict}: {e}")
             raise
 
-    async def find_all(self, filters: BaseModel | None = None) -> Sequence[T]:
+    async def find_all(self, filters: BaseModel | None = None) -> Iterable[T]:
         filter_dict = filters.model_dump(exclude_unset=True) if filters else {}
         logger.info(
             f"Поиск всех записей {self.model.__name__} по фильтрам: {filter_dict}"
@@ -186,68 +185,89 @@ class BaseDAO(Generic[T]):
             raise
 
 
-class UserDAO(BaseDAO):  # type: ignore
+class UserDAO(BaseDAO[MUser]):
     model = MUser
 
     async def get_user_by_name(self, username: str) -> MUser | None:
 
-        user: MUser | None = cast(MUser, await self.find_one_or_none(filters=UserFilter(username=username)))
-        return user 
+        user: MUser | None = cast(
+            MUser, await self.find_one_or_none(filters=UserFilter(username=username))
+        )
+        return user
 
+    async def add_new_users(self, users: Iterable[SUserInDB]) -> list[MUser]:
+        return await self.add_many(users)
 
-    async def add_new_users(self, users: Iterable[UserInDB]) -> list[MUser]:
-        return await self.add_many(users) # type: ignore
-
-    
     async def add_permission_to_user(self, username: str, permission: SPermissionIn):
 
-        user: MUser | None = cast(MUser | None, await self.find_one_or_none(filters=UserFilter(username=username)))
+        user: MUser | None = await self.find_one_or_none(
+            filters=UserFilter(username=username)
+        )
         if not user:
             logger.error(f"Пользователь с именем {username} не найден.")
             raise ValueError(f"Пользователь с именем {username} не найден.")
 
         permission_dao = PermissionDAO(self._session)
-        perm: MPermission | None = cast(MPermission | None, await permission_dao.find_one_or_none(filters=SPermissionIn(name=permission.name)))
+        perm: MPermission | None = await permission_dao.find_one_or_none(
+            filters=SPermissionIn(name=permission.name)
+        )
         if not perm:
             logger.error(f"Разрешение {permission.name} не найдено.")
             return user
-        
+
         if perm in user.permissions:
-            logger.warning(f"Пользователь {username} уже имеет разрешение {permission.name}.")
+            logger.warning(
+                f"Пользователь {username} уже имеет разрешение {permission.name}."
+            )
             return user
 
         user.permissions.append(perm)
         await self._session.flush()
         return user
-    
-    async def add_permissions_to_user(self, username: str, permissions: Iterable[SPermissionIn]):
 
-        user: MUser | None = cast(MUser | None, await self.find_one_or_none(filters=UserFilter(username=username)))
+    async def add_permissions_to_user(
+        self, username: str, permissions: Iterable[SPermissionIn]
+    ):
+
+        user: MUser | None = await self.find_one_or_none(
+            filters=UserFilter(username=username)
+        )
         if not user:
             logger.error(f"Пользователь с именем {username} не найден.")
             raise ValueError(f"Пользователь с именем {username} не найден.")
 
         permission_dao = PermissionDAO(self._session)
         for permission in permissions:
-            perm: MPermission | None = cast(MPermission | None, await permission_dao.find_one_or_none(filters=SPermissionIn(name=permission.name)))
+            perm: MPermission | None = await permission_dao.find_one_or_none(
+                filters=SPermissionIn(name=permission.name)
+            )
             if not perm:
                 logger.error(f"Разрешение {permission} не найдено.")
                 continue
             if perm in user.permissions:
-                logger.warning(f"Пользователь {username} уже имеет разрешение {permission}.")
+                logger.warning(
+                    f"Пользователь {username} уже имеет разрешение {permission}."
+                )
                 continue
             user.permissions.append(perm)
             await self._session.flush()
         return user
-    
 
 
-class PermissionDAO(BaseDAO): # type: ignore
+class PermissionDAO(BaseDAO[MPermission]):  # type: ignore
     model = MPermission
 
-    async def add_permissions(self, permissions: Iterable[SPermissionIn]) -> list[MPermission]:
-        return cast(list[MPermission], await self.add_many(permissions))
-    
+    async def add_permissions(
+        self, permissions: Iterable[SPermissionIn]
+    ) -> list[MPermission]:
+        return await self.add_many(permissions)
+
     async def add_permission(self, permission: SPermissionIn) -> MPermission:
-        return cast(MPermission, await self.add(permission))
-    
+        return await self.add(permission)
+
+
+class ProductDAO(BaseDAO[MProduct]):
+    model = MProduct
+
+class NomenclatureDAO(BaseDAO[MNomenclature]):
+    model = MNomenclature

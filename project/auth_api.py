@@ -16,7 +16,7 @@ from pydantic import BaseModel # type: ignore
 
 from project.config import settings
 
-from project.auth_schemas import AuthUserData, Token, UserBrokerResult, UserOut, UserIn
+from project.auth_schemas import AuthUserData, Token, UserBrokerResult, SUserOut, SUserIn
 from project.auth_lib import (
     TokenData,
     verifi_token, 
@@ -79,7 +79,7 @@ async def get_token_username(
 async def get_current_user(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
     broker: Annotated[RedisBroker, Depends(broker)]
-)-> UserOut:
+)-> SUserOut:
     
     broker_response = await broker.request(
         token_data.username, 
@@ -98,7 +98,7 @@ async def get_current_user(
     if not user: # should not happen, but just in case
         raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION("Internal server error during user retrieval, incompatible service state")
 
-    return UserOut(**user.model_dump())
+    return SUserOut(**user.model_dump())
 
 
 @broker_router.post("/api/auth/token/")
@@ -148,9 +148,9 @@ async def get_token_data(
 
 @app.post("/api/auth/register/")
 async def register_user(
-    user_data: UserIn,
+    user_data: SUserIn,
     broker: Annotated[RedisBroker, Depends(broker)]
-) -> UserOut:
+) -> SUserOut:
     
     broker_response = await broker.request(
         user_data, 
@@ -182,8 +182,8 @@ async def get_token_user(
 
 @app.get("/api/auth/profile")
 async def read_users_me(
-    current_user: Annotated[UserOut, Security(get_current_user, scopes=["me"])],
-) -> UserOut:
+    current_user: Annotated[SUserOut, Security(get_current_user, scopes=["me"])],
+) -> SUserOut:
     return current_user
 
 

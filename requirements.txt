@@ -14,3 +14,4 @@ pwdlib[argon2]==0.3.0
 # Faker==40.15.0 for development
 # aiofiles==25.1.0 for development
 # types-aiofiles==25.1.0.20260409 for development
+# faker-ecommerce-provider==1.1.0 
