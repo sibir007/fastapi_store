@@ -8,18 +8,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 
 from faststream.redis import RedisBroker
-from faststream.redis.fastapi import RedisRouter
-from pydantic import BaseModel  # type: ignore
 
 
-from project.config import settings
+from project.broker_router import broker, broker_router
 
-from project.schemas_auth import AuthUserData, Token, SUserOut, SUserIn
+from project.schemas_auth import TokenData, AuthUserData, Token, SUserOut, SUserIn
 from project.lib_auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
     SECRET_KEY,
-    TokenData,
     create_access_token,
     get_token_username,
     verifiy_and_get_token_data,
@@ -29,12 +26,6 @@ from project.schemas_broker import UserBrokerResult
 
 app = FastAPI()
 
-
-broker_router = RedisRouter(settings.REDIS_URL)
-
-
-def broker() -> RedisBroker:
-    return broker_router.broker
 
 async def get_current_user(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
@@ -60,7 +51,6 @@ async def get_current_user(
         )
 
     return SUserOut(**user.model_dump())
-
 
 
 @broker_router.post("/api/auth/token/")
