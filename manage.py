@@ -1,9 +1,9 @@
 
 import typer
 
-from scripts.init import app as init_app
-from scripts.users import app as users_app
-from scripts.products import app as products_app
+from manage.init import app as init_app
+from manage.users import app as users_app
+from manage.products import app as products_app
 
 app = typer.Typer()
 app.add_typer(init_app, name="init", rich_help_panel="Subcommand")

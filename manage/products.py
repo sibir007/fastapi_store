@@ -23,7 +23,7 @@ from project.database.dao_products_util import (
     get_nomenclatures,
 )
 from project.schemas_products import SNomenclatureIn, SProductIn, SProsuctDbOutFull
-from scripts.utils import save_list_to_json_file
+from manage.utils import save_list_to_json_file
 
 PRODUCTS_FILE = "scripts/products.json"
 NOMENCLATURE_FILE = "scripts/nomenclature.json"

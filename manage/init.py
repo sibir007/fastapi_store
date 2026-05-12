@@ -5,7 +5,7 @@ import asyncio
 
 from project.database.dao_users_util import clear_and_resave_permissions
 from project.database.dao_util import init_db as async_init_db
-from scripts.users import app
+from manage.users import app
 
 app = typer.Typer()
 

@@ -20,7 +20,7 @@ from project.database.dao_users_util import (
 )
 import asyncio
 
-from scripts.utils import save_list_to_json_file
+from manage.utils import save_list_to_json_file
 
 # logger = logger.getLogger(__name__)
 
