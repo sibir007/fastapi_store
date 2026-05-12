@@ -35,13 +35,13 @@ services:
     ports:
       - "${ADMINER_PORT}:8080"
 
-  worker:
-    container_name: worker
+  worker_auth:
+    container_name: worker_auth
     build: .
     # network_mode: host
     # ports:
     #   - 8004:8000
-    command: faststream run project.auth_worker:app
+    command: faststream run project.worker_auth:worker
     # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
     # volumes:
     #   - ./project:/usr/src/app

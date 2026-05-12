@@ -1,6 +1,4 @@
-
-
-from fastapi import FastAPI,  Security
+from fastapi import FastAPI, Security
 from project.lib_auth import get_token_username
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,8 +9,14 @@ from project.database.dao_products_util import (
     add_nomenclatures as add_nomenclatures_util,
     add_products as add_products_util,
 )
-from project.schemas_products import SNomenclatureIn, SNomenclatureOut, SProductIn, SProductSummaryOutAdmin, SProductSummaryOutByer, SProsuctDbOutFull   
-
+from project.schemas_products import (
+    SNomenclatureIn,
+    SNomenclatureOut,
+    SProductIn,
+    SProductSummaryOutAdmin,
+    SProductSummaryOutByer,
+    SProsuctDbOutFull,
+)
 
 app = FastAPI()
 
@@ -39,11 +43,14 @@ async def get_admin_products() -> list[SProductSummaryOutAdmin]:
 async def add_products(products: list[SProductIn]) -> list[SProsuctDbOutFull]:
     return await add_products_util(products)
 
+
 @app.post(
     "/api/admin/nomenclatures/",
     dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
 )
-async def add_nomenclatures(nomenclatures: list[SNomenclatureIn]) -> list[SNomenclatureOut]:
+async def add_nomenclatures(
+    nomenclatures: list[SNomenclatureIn],
+) -> list[SNomenclatureOut]:
     return await add_nomenclatures_util(nomenclatures)
 
 

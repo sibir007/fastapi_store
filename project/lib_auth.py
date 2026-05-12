@@ -15,6 +15,15 @@ from project.config import settings
 
 from project.schemas_auth import TokenData
 
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=settings.AUTH_API_URL,
+    scopes={"me": "Read information about the current user.",
+            "items": "Read items.",
+            "admin_permissions": "Insert administrator permissions into the token if the user has them"},
+)
 
 
 
@@ -65,15 +74,6 @@ def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
 
 # to get a string like this run:
 # openssl rand -hex 32
-SECRET_KEY = settings.SECRET_KEY
-ALGORITHM = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=settings.AUTH_API_PATH,
-    scopes={"me": "Read information about the current user.",
-            "items": "Read items.",
-            "admin_permissions": "Insert administrator permissions into the token if the user has them"},
-)
 
 
 async def verifiy_and_get_token_data(

@@ -1,7 +1,6 @@
 from fastapi import status
 
-from faststream import FastStream, Logger
-from faststream.redis import RedisBroker
+from faststream import Logger
 from project.schemas_broker import BrokerExeption, UserBrokerResult
 from project.lib_auth import get_password_hash, verify_password
 from project.database.dao_users_util import create_user, get_user_by_name, get_user_by_name_with_pass_hash
@@ -11,11 +10,9 @@ from project.schemas_auth import (
     SUserInDB,
     SUserOut,
 )
-from project.config import settings
+from project.broker import broker
+from project.worker import worker
 
-broker = RedisBroker(settings.REDIS_URL)
-
-app = FastStream(broker)
 
 
 @broker.subscriber(list="auth")
@@ -140,6 +137,6 @@ async def base_handler(msg: str, logger: Logger) -> None:
     logger.info(f"test message: {msg}")
 
 
-@app.after_startup
+@worker.after_startup
 async def test():
     await broker.publish("test startup", list="test")

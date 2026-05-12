@@ -1,37 +1,63 @@
-from typing import Annotated
+from fastapi import FastAPI, Security
+from project.lib_auth import get_token_username
 
-from fastapi import Depends, FastAPI
-from fastapi.security import OAuth2PasswordBearer
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
+from project.database.dao_products_util import (
+    get_products_summary_for_byer,
+    get_products_summary_for_admin,
+    add_nomenclatures as add_nomenclatures_util,
+    add_products as add_products_util,
+)
+from project.schemas_products import (
+    SNomenclatureIn,
+    SNomenclatureOut,
+    SProductIn,
+    SProductSummaryOutAdmin,
+    SProductSummaryOutByer,
+    SProsuctDbOutFull,
+)
 
 app = FastAPI()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-class User(BaseModel):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-
-def fake_decode_token(token: str) -> User:
-    return User(
-        username=token + "fakedecoded", email="john@example.com", full_name="John Doe"
-    )
+@app.get(
+    "/api/products/", dependencies=[Security(get_token_username, scopes=["items"])]
+)
+async def get_products() -> list[SProductSummaryOutByer]:
+    return await get_products_summary_for_byer()
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> User:
-    user = fake_decode_token(token)
-    return user
+@app.get(
+    "/api/admin/products/",
+    dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
+)
+async def get_admin_products() -> list[SProductSummaryOutAdmin]:
+    return await get_products_summary_for_admin()
 
 
+@app.post(
+    "/api/admin/products/",
+    dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
+)
+async def add_products(products: list[SProductIn]) -> list[SProsuctDbOutFull]:
+    return await add_products_util(products)
 
-@app.get("/items/")
-async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
-    return {"token": token}
 
-# http://127.0.0.1:8000/docs#/default/read_users_me_users_me_get
+@app.post(
+    "/api/admin/nomenclatures/",
+    dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
+)
+async def add_nomenclatures(
+    nomenclatures: list[SNomenclatureIn],
+) -> list[SNomenclatureOut]:
+    return await add_nomenclatures_util(nomenclatures)
 
-@app.get("/users/me", response_model=User)
-async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]) -> User:
-    return current_user
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
