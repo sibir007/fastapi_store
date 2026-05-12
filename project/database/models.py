@@ -109,6 +109,7 @@ class MUser(MBase):
     email: Mapped[str_uniq]
     hashed_password: Mapped[str]
     disabled: Mapped[bool] = mapped_column(default=False)
+    balance: Mapped[Decimal] = mapped_column(default=0)
     permissions: Mapped[list["MPermission"]] = relationship(
         secondary=user_permission_association_table,
         back_populates="users",
