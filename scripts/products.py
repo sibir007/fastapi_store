@@ -13,31 +13,29 @@ import typer
 
 import asyncio
 
-from project.auth_schemas import (
-    SNomenclatureIn,
+from project.schemas_products import (
     SNomenclatureOut,
-    SProductIn,
-    SProsuctDbOutFull,
 )
 from project.database.dao_products_util import (
     add_nomenclatures,
-    add_prducts,
+    add_products,
     clear_nomenclature_table,
     get_nomenclatures,
 )
+from project.schemas_products import SNomenclatureIn, SProductIn, SProsuctDbOutFull
 from scripts.utils import save_list_to_json_file
 
 PRODUCTS_FILE = "scripts/products.json"
 NOMENCLATURE_FILE = "scripts/nomenclature.json"
 
 # for generane prices
-AVERAGE_PRICE_MIN = 500
-AVERAGE_PRICE_MAX = 100_000
-AVERAGE_PRICE_MODE = 5_000
+AVERAGE_PRICE_MIN = 100
+AVERAGE_PRICE_MAX = 20_000
+AVERAGE_PRICE_MODE = 1_000
 
 # for generating product
 PRODUCT_AMMOUNT_MIN = 1
-PRODUCT_AMMOUNT_MAX = 30
+PRODUCT_AMMOUNT_MAX = 20
 AVERAGE_PRICE_DEVIATION = 0.15
 
 
@@ -112,7 +110,7 @@ def _generate_products(
     random_nom = (choice(nom_av_list) for _ in deliver_overal)
     products: Generator[SProductIn, None, None] = (
         SProductIn(
-            cost_price=_get_random_cost_price(n), quantity=randint(1, 100), nom_id=n.id
+            cost_price=_get_random_cost_price(n), quantity=randint(PRODUCT_AMMOUNT_MIN, PRODUCT_AMMOUNT_MAX), nom_id=n.id
         )
         for n in random_nom
     )
@@ -153,7 +151,7 @@ async def generate_products(
     )
     typer.echo("products generaded")
     typer.echo("saving products to db...")
-    prod_out: list[SProsuctDbOutFull] = await add_prducts(prod_in)
+    prod_out: list[SProsuctDbOutFull] = await add_products(prod_in)
     typer.echo("product saved")
     typer.echo("select nomenclature from db...")
     nom_out = await get_nomenclatures()

@@ -11,7 +11,7 @@ from project.database.models import MUser, Permission
 from project.database.session import async_session
 
 
-from project.auth_schemas import (
+from project.schemas_auth import (
     SPermissionIn,
     SPermissionOut,
     UserFilter,

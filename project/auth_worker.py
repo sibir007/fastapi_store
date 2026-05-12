@@ -2,12 +2,11 @@ from fastapi import status
 
 from faststream import FastStream, Logger
 from faststream.redis import RedisBroker
-from project.auth_lib import get_password_hash, verify_password
+from project.schemas_broker import BrokerExeption, UserBrokerResult
+from project.lib_auth import get_password_hash, verify_password
 from project.database.dao_users_util import create_user, get_user_by_name, get_user_by_name_with_pass_hash
-from project.auth_schemas import (
+from project.schemas_auth import (
     AuthUserData,
-    BrokerExeption,
-    UserBrokerResult,
     SUserIn,
     SUserInDB,
     SUserOut,

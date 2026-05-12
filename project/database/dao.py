@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # from sqlalchemy.orm import selectinload
 
-from project.auth_schemas import SPermissionIn, UserFilter, SUserInDB
+from project.schemas_auth import SPermissionIn, UserFilter, SUserInDB
 from project.database.models import MBase, MNomenclature, MPermission, MProduct, MUser
 import logging
 

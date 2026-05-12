@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     # ADMINER_PORT: int
 
+    AUTH_API_SCHEME: str
+    AUTH_API_HOST: str
+    AUTH_API_PORT: str
+    AUTH_API_PATH: str
+
+
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
@@ -31,7 +37,11 @@ class Settings(BaseSettings):
     @property
     def POSTGRES_URL(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-                    
+
+    @property
+    def AUTH_API_URL(self) -> str:
+        return f"{self.AUTH_API_SCHEME}://{self.AUTH_API_HOST}:{self.AUTH_API_PORT}/{self.AUTH_API_PATH}"
+
 
 settings = Settings() # type: ignore
 

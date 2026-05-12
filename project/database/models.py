@@ -64,6 +64,8 @@ class MNomenclature(MBase):
     name: Mapped[str_uniq]
     description: Mapped[str | None]
     booked: Mapped[int] = mapped_column(default=0)
+    markup: Mapped[Decimal] = mapped_column(default=Decimal("0.2"))
+    # markup: Mapped[Decimal | None] = mapped_column(default=0.2)
     products: Mapped[list["MProduct"]] = relationship(
         "MProduct",
         back_populates="nomenclature",

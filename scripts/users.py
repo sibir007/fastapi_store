@@ -11,10 +11,9 @@ from faker_ecommerce import EcommerceProvider  # type: ignore
 from typing_extensions import Annotated
 
 import typer
-from project.auth_lib import get_password_hash
-from project.auth_schemas import SUserIn, SUserInDB, SUserOut
+from project.lib_auth import get_password_hash
+from project.schemas_auth import SUserIn, SUserInDB, SUserOut
 from project.database.dao_users_util import (
-    clear_and_resave_permissions,
     create_update_superuser,
     clear_users_table,
     create_users,
@@ -150,8 +149,3 @@ def generate(
     save_list_to_json_file(out_file, users, SUserIn)
 
 
-@app.command()
-def save_permissions():
-    """clear and resave permissions to db"""
-
-    asyncio.run(clear_and_resave_permissions())

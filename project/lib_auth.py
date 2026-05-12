@@ -1,46 +1,21 @@
 from datetime import timedelta, datetime, timezone
 
-from typing import Any
+from typing import Annotated, Any
 
 
-from fastapi import HTTPException, status
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+
 from pwdlib import PasswordHash
 import jwt
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
-from project.auth_schemas import TokenData
-# from project.database.dao import UserDAO
-# from project.database.models import MUser
-# from sqlalchemy.ext.asyncio import AsyncSession
 
-type DB = dict[str, dict[str, str | bool | list[str]]]
+from project.config import settings
 
-fake_users_db: DB = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$wagCPXjifgvUFBzq4hqe3w$CYaIb8sB+wtD+Vu/P4uod1+Qof8h+1g7bbDlBID48Rc",
-        "disabled": False,
-        "permissions": ["user:read", "user:write"],
-    },
-    "john": {
-        "username": "john",
-        "full_name": "John",
-        "email": "john@example.com",
-        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$wagCPXjifgvUFBzq4hqe3w$CYaIb8sB+wtD+Vu/P4uod1+Qof8h+1g7bbDlBID48Rc",
-        "disabled": False,
-        "permissions": [],
-    },
-    "alice": {
-        "username": "alice",
-        "full_name": "Alice Chains",
-        "email": "alicechains@example.com",
-        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$g2/AV1zwopqUntPKJavBFw$BwpRGDCyUHLvHICnwijyX8ROGoiUPwNKZ7915MeYfCE",
-        "disabled": True,
-        "permissions": [],
-    },
-}
+from project.schemas_auth import TokenData
+
+
 
 
 password_hash = PasswordHash.recommended()
@@ -53,12 +28,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
 
-
-# async def get_user_by_name(session: AsyncSession, username: str) -> MUser | None:
-
-#     user_dao: UserDAO = UserDAO(session)
-#     user: MUser | None = await user_dao.find_one_or_none(filters=UserFilter(username=username))  # type: ignore
-#     return user  # type: ignore
 
 
 def create_access_token(
@@ -94,4 +63,37 @@ def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
     return token_data
 
 
-# async def register_user(user:)
+# to get a string like this run:
+# openssl rand -hex 32
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=settings.AUTH_API_PATH,
+    scopes={"me": "Read information about the current user.",
+            "items": "Read items.",
+            "admin_permissions": "Insert administrator permissions into the token if the user has them"},
+)
+
+
+async def verifiy_and_get_token_data(
+    security_scopes: SecurityScopes, token: Annotated[str, Depends(oauth2_scheme)]
+) -> TokenData:
+
+    token_data: TokenData = verifi_token(token, secret_key=SECRET_KEY, algorithm=ALGORITHM)
+    for scope in security_scopes.scopes:
+        if scope not in token_data.scopes:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Not enough permissions",
+                headers={"WWW-Authenticate": f'Bearer scope="{security_scopes.scope_str}"'},
+                )
+    return token_data
+
+
+async def get_token_username(
+    token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
+) -> str:
+    return token_data.username
+
+

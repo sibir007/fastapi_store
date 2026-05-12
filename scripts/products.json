@@ -1,452 +1,1352 @@
 [
     {
-        "id": 151,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 39,
-        "cost_price": "55312.83",
-        "remainder": 44,
-        "name": "Nike Deluxe Speaker",
-        "description": "A limited edition fitness tracker made with high-quality nylon."
+        "id": 501,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 125,
+        "cost_price": "2207.01",
+        "remainder": 13,
+        "name": "Philips Modern Laptop",
+        "description": "A ultra fitness tracker made with high-quality recycled plastic."
     },
     {
-        "id": 152,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "52663.57",
-        "remainder": 7,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
+        "id": 502,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "2150.6",
+        "remainder": 6,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
     },
     {
-        "id": 153,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "52887.71",
-        "remainder": 23,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 154,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "23963.17",
-        "remainder": 63,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
-    },
-    {
-        "id": 155,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "18823.77",
-        "remainder": 73,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
-    },
-    {
-        "id": 156,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "48355.67",
-        "remainder": 74,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 157,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 34,
-        "cost_price": "4711.61",
-        "remainder": 54,
-        "name": "Philips High-Performance Monitor",
-        "description": "A high-performance blender made with high-quality silicone."
-    },
-    {
-        "id": 158,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 38,
-        "cost_price": "28075.8",
-        "remainder": 44,
-        "name": "Dell Professional Air Purifier",
-        "description": "A wireless air purifier made with high-quality cashmere."
-    },
-    {
-        "id": 159,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "22783.28",
-        "remainder": 57,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
-    },
-    {
-        "id": 160,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 37,
-        "cost_price": "77245.09",
-        "remainder": 64,
-        "name": "Logitech Deluxe Laptop",
-        "description": "A organic keyboard made with high-quality silicone."
-    },
-    {
-        "id": 161,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 34,
-        "cost_price": "5394.85",
-        "remainder": 38,
-        "name": "Philips High-Performance Monitor",
-        "description": "A high-performance blender made with high-quality silicone."
-    },
-    {
-        "id": 162,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 36,
-        "cost_price": "73048.75",
-        "remainder": 4,
-        "name": "Levi's Heavy-Duty Gaming Chair",
-        "description": "A limited edition blender made with high-quality stainless steel."
-    },
-    {
-        "id": 163,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "19867.74",
-        "remainder": 27,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
-    },
-    {
-        "id": 164,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "53905.75",
-        "remainder": 89,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 165,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "16903.8",
-        "remainder": 14,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
-    },
-    {
-        "id": 166,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "18990.13",
-        "remainder": 15,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
-    },
-    {
-        "id": 167,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "21522.0",
-        "remainder": 45,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
-    },
-    {
-        "id": 168,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 36,
-        "cost_price": "73265.47",
-        "remainder": 4,
-        "name": "Levi's Heavy-Duty Gaming Chair",
-        "description": "A limited edition blender made with high-quality stainless steel."
-    },
-    {
-        "id": 169,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "19121.64",
-        "remainder": 2,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
-    },
-    {
-        "id": 170,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 35,
-        "cost_price": "78891.73",
-        "remainder": 61,
-        "name": "Philips Portable Speaker",
-        "description": "A handcrafted fitness tracker made with high-quality wool."
-    },
-    {
-        "id": 171,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "23494.86",
-        "remainder": 45,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
-    },
-    {
-        "id": 172,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 36,
-        "cost_price": "66454.0",
-        "remainder": 73,
-        "name": "Levi's Heavy-Duty Gaming Chair",
-        "description": "A limited edition blender made with high-quality stainless steel."
-    },
-    {
-        "id": 173,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "23658.75",
-        "remainder": 42,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
-    },
-    {
-        "id": 174,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "23082.27",
-        "remainder": 21,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
-    },
-    {
-        "id": 175,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "51503.13",
-        "remainder": 24,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 176,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "51928.75",
-        "remainder": 19,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 177,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 38,
-        "cost_price": "28178.24",
-        "remainder": 86,
-        "name": "Dell Professional Air Purifier",
-        "description": "A wireless air purifier made with high-quality cashmere."
-    },
-    {
-        "id": 178,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 34,
-        "cost_price": "5099.37",
-        "remainder": 34,
-        "name": "Philips High-Performance Monitor",
-        "description": "A high-performance blender made with high-quality silicone."
-    },
-    {
-        "id": 179,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 36,
-        "cost_price": "72889.65",
-        "remainder": 85,
-        "name": "Levi's Heavy-Duty Gaming Chair",
-        "description": "A limited edition blender made with high-quality stainless steel."
-    },
-    {
-        "id": 180,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 37,
-        "cost_price": "81426.15",
-        "remainder": 94,
-        "name": "Logitech Deluxe Laptop",
-        "description": "A organic keyboard made with high-quality silicone."
-    },
-    {
-        "id": 181,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 33,
-        "cost_price": "43819.51",
-        "remainder": 87,
-        "name": "Apple Classic Sneakers",
-        "description": "A eco-friendly headphones made with high-quality carbon fiber."
-    },
-    {
-        "id": 182,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 38,
-        "cost_price": "25807.55",
-        "remainder": 99,
-        "name": "Dell Professional Air Purifier",
-        "description": "A wireless air purifier made with high-quality cashmere."
-    },
-    {
-        "id": 183,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 35,
-        "cost_price": "79870.35",
-        "remainder": 39,
-        "name": "Philips Portable Speaker",
-        "description": "A handcrafted fitness tracker made with high-quality wool."
-    },
-    {
-        "id": 184,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "16317.51",
-        "remainder": 29,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
-    },
-    {
-        "id": 185,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 38,
-        "cost_price": "26591.56",
-        "remainder": 7,
-        "name": "Dell Professional Air Purifier",
-        "description": "A wireless air purifier made with high-quality cashmere."
-    },
-    {
-        "id": 186,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "61860.56",
-        "remainder": 82,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 187,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 38,
-        "cost_price": "31000.93",
-        "remainder": 82,
-        "name": "Dell Professional Air Purifier",
-        "description": "A wireless air purifier made with high-quality cashmere."
-    },
-    {
-        "id": 188,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 34,
-        "cost_price": "5227.62",
-        "remainder": 64,
-        "name": "Philips High-Performance Monitor",
-        "description": "A high-performance blender made with high-quality silicone."
-    },
-    {
-        "id": 189,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 32,
-        "cost_price": "58175.08",
-        "remainder": 100,
-        "name": "Levi's Portable Mouse",
-        "description": "A vintage backpack made with high-quality cotton."
-    },
-    {
-        "id": 190,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 37,
-        "cost_price": "72853.4",
-        "remainder": 99,
-        "name": "Logitech Deluxe Laptop",
-        "description": "A organic keyboard made with high-quality silicone."
-    },
-    {
-        "id": 191,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 33,
-        "cost_price": "44287.98",
-        "remainder": 5,
-        "name": "Apple Classic Sneakers",
-        "description": "A eco-friendly headphones made with high-quality carbon fiber."
-    },
-    {
-        "id": 192,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 36,
-        "cost_price": "70058.07",
+        "id": 503,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4604.92",
         "remainder": 16,
-        "name": "Levi's Heavy-Duty Gaming Chair",
-        "description": "A limited edition blender made with high-quality stainless steel."
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
     },
     {
-        "id": 193,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 39,
-        "cost_price": "55094.01",
-        "remainder": 58,
-        "name": "Nike Deluxe Speaker",
-        "description": "A limited edition fitness tracker made with high-quality nylon."
+        "id": 504,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "14400.23",
+        "remainder": 10,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
     },
     {
-        "id": 194,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 38,
-        "cost_price": "26205.68",
-        "remainder": 89,
-        "name": "Dell Professional Air Purifier",
-        "description": "A wireless air purifier made with high-quality cashmere."
+        "id": 505,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 135,
+        "cost_price": "3943.02",
+        "remainder": 13,
+        "name": "JBL Premium Camera",
+        "description": "A wireless smartwatch made with high-quality glass."
     },
     {
-        "id": 195,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 37,
-        "cost_price": "76163.12",
+        "id": 506,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 137,
+        "cost_price": "14314.37",
+        "remainder": 9,
+        "name": "Apple Portable Laptop",
+        "description": "A organic vacuum cleaner made with high-quality wood."
+    },
+    {
+        "id": 507,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6413.86",
+        "remainder": 14,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 508,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 135,
+        "cost_price": "4404.99",
+        "remainder": 15,
+        "name": "JBL Premium Camera",
+        "description": "A wireless smartwatch made with high-quality glass."
+    },
+    {
+        "id": 509,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4764.2",
+        "remainder": 5,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 510,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 140,
+        "cost_price": "6166.32",
+        "remainder": 2,
+        "name": "Samsung High-Performance Laptop",
+        "description": "A eco-friendly mouse made with high-quality cotton."
+    },
+    {
+        "id": 511,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "912.89",
+        "remainder": 19,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 512,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 135,
+        "cost_price": "4306.95",
+        "remainder": 6,
+        "name": "JBL Premium Camera",
+        "description": "A wireless smartwatch made with high-quality glass."
+    },
+    {
+        "id": 513,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 140,
+        "cost_price": "5379.43",
+        "remainder": 13,
+        "name": "Samsung High-Performance Laptop",
+        "description": "A eco-friendly mouse made with high-quality cotton."
+    },
+    {
+        "id": 514,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "871.17",
+        "remainder": 19,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 515,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "1958.76",
+        "remainder": 8,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 516,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "935.81",
+        "remainder": 19,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 517,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 138,
+        "cost_price": "352.89",
+        "remainder": 16,
+        "name": "Panasonic Lightweight Vacuum Cleaner",
+        "description": "A lightweight backpack made with high-quality titanium."
+    },
+    {
+        "id": 518,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "11432.98",
+        "remainder": 4,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 519,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4556.92",
+        "remainder": 20,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 520,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 137,
+        "cost_price": "14339.57",
+        "remainder": 12,
+        "name": "Apple Portable Laptop",
+        "description": "A organic vacuum cleaner made with high-quality wood."
+    },
+    {
+        "id": 521,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6271.16",
+        "remainder": 19,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 522,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 148,
+        "cost_price": "6130.32",
+        "remainder": 4,
+        "name": "Dell Wireless Water Bottle",
+        "description": "A heavy-duty water bottle made with high-quality polyester."
+    },
+    {
+        "id": 523,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "10856.0",
+        "remainder": 4,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 524,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 148,
+        "cost_price": "6186.48",
+        "remainder": 19,
+        "name": "Dell Wireless Water Bottle",
+        "description": "A heavy-duty water bottle made with high-quality polyester."
+    },
+    {
+        "id": 525,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "5379.2",
+        "remainder": 1,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 526,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 144,
+        "cost_price": "3179.72",
+        "remainder": 13,
+        "name": "Lenovo Classic Camera",
+        "description": "A high-performance monitor made with high-quality bamboo."
+    },
+    {
+        "id": 527,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "2283.73",
+        "remainder": 1,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
+    },
+    {
+        "id": 528,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 149,
+        "cost_price": "10693.02",
+        "remainder": 15,
+        "name": "Cuisinart Organic Tablet",
+        "description": "A heavy-duty gaming chair made with high-quality glass."
+    },
+    {
+        "id": 529,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "2121.45",
+        "remainder": 4,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
+    },
+    {
+        "id": 530,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 138,
+        "cost_price": "375.53",
+        "remainder": 8,
+        "name": "Panasonic Lightweight Vacuum Cleaner",
+        "description": "A lightweight backpack made with high-quality titanium."
+    },
+    {
+        "id": 531,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 142,
+        "cost_price": "6117.69",
+        "remainder": 16,
+        "name": "HP Ergonomic Camera",
+        "description": "A deluxe speaker made with high-quality silicone."
+    },
+    {
+        "id": 532,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 149,
+        "cost_price": "10916.11",
+        "remainder": 13,
+        "name": "Cuisinart Organic Tablet",
+        "description": "A heavy-duty gaming chair made with high-quality glass."
+    },
+    {
+        "id": 533,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "9932.78",
+        "remainder": 17,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 534,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 126,
+        "cost_price": "2138.17",
+        "remainder": 7,
+        "name": "Adidas Portable Mouse",
+        "description": "A modern coffee maker made with high-quality aluminum."
+    },
+    {
+        "id": 535,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 141,
+        "cost_price": "18720.39",
+        "remainder": 11,
+        "name": "KitchenAid Handcrafted Speaker",
+        "description": "A deluxe monitor made with high-quality cashmere."
+    },
+    {
+        "id": 536,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "9856.33",
+        "remainder": 5,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 537,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "8813.51",
+        "remainder": 11,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 538,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "13902.26",
+        "remainder": 9,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 539,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "10227.83",
+        "remainder": 18,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 540,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 145,
+        "cost_price": "2133.61",
+        "remainder": 13,
+        "name": "Dell Professional Mouse",
+        "description": "A limited edition keyboard made with high-quality polyester."
+    },
+    {
+        "id": 541,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4914.28",
+        "remainder": 8,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 542,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 125,
+        "cost_price": "2028.11",
+        "remainder": 20,
+        "name": "Philips Modern Laptop",
+        "description": "A ultra fitness tracker made with high-quality recycled plastic."
+    },
+    {
+        "id": 543,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "9263.93",
+        "remainder": 18,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 544,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 131,
+        "cost_price": "3118.07",
+        "remainder": 1,
+        "name": "LG Lightweight Gaming Chair",
+        "description": "A eco-friendly camera made with high-quality leather."
+    },
+    {
+        "id": 545,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "949.08",
+        "remainder": 14,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 546,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 129,
+        "cost_price": "11914.15",
+        "remainder": 4,
+        "name": "Bose Limited Edition Smartphone",
+        "description": "A waterproof backpack made with high-quality stainless steel."
+    },
+    {
+        "id": 547,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "13832.68",
+        "remainder": 7,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 548,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 130,
+        "cost_price": "12594.85",
         "remainder": 3,
-        "name": "Logitech Deluxe Laptop",
-        "description": "A organic keyboard made with high-quality silicone."
+        "name": "Levi's Limited Edition Vacuum Cleaner",
+        "description": "A eco-friendly sneakers made with high-quality leather."
     },
     {
-        "id": 196,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 39,
-        "cost_price": "50508.96",
-        "remainder": 86,
-        "name": "Nike Deluxe Speaker",
-        "description": "A limited edition fitness tracker made with high-quality nylon."
+        "id": 549,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 149,
+        "cost_price": "10770.5",
+        "remainder": 20,
+        "name": "Cuisinart Organic Tablet",
+        "description": "A heavy-duty gaming chair made with high-quality glass."
     },
     {
-        "id": 197,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 34,
-        "cost_price": "4949.12",
-        "remainder": 38,
-        "name": "Philips High-Performance Monitor",
-        "description": "A high-performance blender made with high-quality silicone."
+        "id": 550,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "13706.82",
+        "remainder": 17,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
     },
     {
-        "id": 198,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 35,
-        "cost_price": "85663.86",
-        "remainder": 87,
-        "name": "Philips Portable Speaker",
-        "description": "A handcrafted fitness tracker made with high-quality wool."
+        "id": 551,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 138,
+        "cost_price": "392.87",
+        "remainder": 7,
+        "name": "Panasonic Lightweight Vacuum Cleaner",
+        "description": "A lightweight backpack made with high-quality titanium."
     },
     {
-        "id": 199,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 31,
-        "cost_price": "20329.51",
-        "remainder": 48,
-        "name": "Nike Premium Monitor",
-        "description": "A handcrafted smartwatch made with high-quality wood."
+        "id": 552,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 152,
+        "cost_price": "7153.47",
+        "remainder": 11,
+        "name": "Logitech Eco-Friendly Tablet",
+        "description": "A ergonomic air purifier made with high-quality cotton."
     },
     {
-        "id": 200,
-        "created": "2026-05-10T12:56:26.388602Z",
-        "nom_id": 40,
-        "cost_price": "22308.37",
-        "remainder": 69,
-        "name": "Samsung Ultra Water Bottle",
-        "description": "A eco-friendly backpack made with high-quality wood."
+        "id": 553,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 147,
+        "cost_price": "2700.87",
+        "remainder": 13,
+        "name": "Dell Heavy-Duty Coffee Maker",
+        "description": "A eco-friendly sneakers made with high-quality carbon fiber."
+    },
+    {
+        "id": 554,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 141,
+        "cost_price": "18874.84",
+        "remainder": 2,
+        "name": "KitchenAid Handcrafted Speaker",
+        "description": "A deluxe monitor made with high-quality cashmere."
+    },
+    {
+        "id": 555,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "9261.36",
+        "remainder": 15,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 556,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 140,
+        "cost_price": "5525.5",
+        "remainder": 17,
+        "name": "Samsung High-Performance Laptop",
+        "description": "A eco-friendly mouse made with high-quality cotton."
+    },
+    {
+        "id": 557,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 123,
+        "cost_price": "19424.87",
+        "remainder": 19,
+        "name": "KitchenAid Compact Headphones",
+        "description": "A ultra mouse made with high-quality nylon."
+    },
+    {
+        "id": 558,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 149,
+        "cost_price": "9327.68",
+        "remainder": 5,
+        "name": "Cuisinart Organic Tablet",
+        "description": "A heavy-duty gaming chair made with high-quality glass."
+    },
+    {
+        "id": 559,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 123,
+        "cost_price": "20298.04",
+        "remainder": 12,
+        "name": "KitchenAid Compact Headphones",
+        "description": "A ultra mouse made with high-quality nylon."
+    },
+    {
+        "id": 560,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "8232.3",
+        "remainder": 13,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 561,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "2153.78",
+        "remainder": 10,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 562,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 136,
+        "cost_price": "8250.18",
+        "remainder": 9,
+        "name": "Apple Deluxe Smartphone",
+        "description": "A premium tablet made with high-quality carbon fiber."
+    },
+    {
+        "id": 563,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 145,
+        "cost_price": "2274.91",
+        "remainder": 20,
+        "name": "Dell Professional Mouse",
+        "description": "A limited edition keyboard made with high-quality polyester."
+    },
+    {
+        "id": 564,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 145,
+        "cost_price": "2483.09",
+        "remainder": 9,
+        "name": "Dell Professional Mouse",
+        "description": "A limited edition keyboard made with high-quality polyester."
+    },
+    {
+        "id": 565,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 150,
+        "cost_price": "15568.2",
+        "remainder": 16,
+        "name": "KitchenAid Handcrafted Blender",
+        "description": "A portable blender made with high-quality wood."
+    },
+    {
+        "id": 566,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 141,
+        "cost_price": "19370.86",
+        "remainder": 19,
+        "name": "KitchenAid Handcrafted Speaker",
+        "description": "A deluxe monitor made with high-quality cashmere."
+    },
+    {
+        "id": 567,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "9332.73",
+        "remainder": 1,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 568,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 131,
+        "cost_price": "3274.01",
+        "remainder": 20,
+        "name": "LG Lightweight Gaming Chair",
+        "description": "A eco-friendly camera made with high-quality leather."
+    },
+    {
+        "id": 569,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 130,
+        "cost_price": "11794.08",
+        "remainder": 6,
+        "name": "Levi's Limited Edition Vacuum Cleaner",
+        "description": "A eco-friendly sneakers made with high-quality leather."
+    },
+    {
+        "id": 570,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 144,
+        "cost_price": "2960.83",
+        "remainder": 5,
+        "name": "Lenovo Classic Camera",
+        "description": "A high-performance monitor made with high-quality bamboo."
+    },
+    {
+        "id": 571,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "14277.52",
+        "remainder": 14,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 572,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 152,
+        "cost_price": "7832.73",
+        "remainder": 11,
+        "name": "Logitech Eco-Friendly Tablet",
+        "description": "A ergonomic air purifier made with high-quality cotton."
+    },
+    {
+        "id": 573,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "2272.21",
+        "remainder": 18,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 574,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 136,
+        "cost_price": "7881.63",
+        "remainder": 5,
+        "name": "Apple Deluxe Smartphone",
+        "description": "A premium tablet made with high-quality carbon fiber."
+    },
+    {
+        "id": 575,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 147,
+        "cost_price": "2619.93",
+        "remainder": 8,
+        "name": "Dell Heavy-Duty Coffee Maker",
+        "description": "A eco-friendly sneakers made with high-quality carbon fiber."
+    },
+    {
+        "id": 576,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 141,
+        "cost_price": "18414.28",
+        "remainder": 11,
+        "name": "KitchenAid Handcrafted Speaker",
+        "description": "A deluxe monitor made with high-quality cashmere."
+    },
+    {
+        "id": 577,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "9430.63",
+        "remainder": 6,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 578,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 142,
+        "cost_price": "5233.96",
+        "remainder": 9,
+        "name": "HP Ergonomic Camera",
+        "description": "A deluxe speaker made with high-quality silicone."
+    },
+    {
+        "id": 579,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 150,
+        "cost_price": "16369.09",
+        "remainder": 14,
+        "name": "KitchenAid Handcrafted Blender",
+        "description": "A portable blender made with high-quality wood."
+    },
+    {
+        "id": 580,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "2147.99",
+        "remainder": 10,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
+    },
+    {
+        "id": 581,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 142,
+        "cost_price": "5611.42",
+        "remainder": 17,
+        "name": "HP Ergonomic Camera",
+        "description": "A deluxe speaker made with high-quality silicone."
+    },
+    {
+        "id": 582,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 148,
+        "cost_price": "5814.77",
+        "remainder": 17,
+        "name": "Dell Wireless Water Bottle",
+        "description": "A heavy-duty water bottle made with high-quality polyester."
+    },
+    {
+        "id": 583,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "809.47",
+        "remainder": 19,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 584,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 140,
+        "cost_price": "6155.12",
+        "remainder": 13,
+        "name": "Samsung High-Performance Laptop",
+        "description": "A eco-friendly mouse made with high-quality cotton."
+    },
+    {
+        "id": 585,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4973.25",
+        "remainder": 16,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 586,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 139,
+        "cost_price": "8044.39",
+        "remainder": 8,
+        "name": "HP Organic Coffee Maker",
+        "description": "A eco-friendly blender made with high-quality nylon."
+    },
+    {
+        "id": 587,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 129,
+        "cost_price": "11936.25",
+        "remainder": 10,
+        "name": "Bose Limited Edition Smartphone",
+        "description": "A waterproof backpack made with high-quality stainless steel."
+    },
+    {
+        "id": 588,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "848.38",
+        "remainder": 17,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 589,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 141,
+        "cost_price": "18083.48",
+        "remainder": 10,
+        "name": "KitchenAid Handcrafted Speaker",
+        "description": "A deluxe monitor made with high-quality cashmere."
+    },
+    {
+        "id": 590,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "5770.36",
+        "remainder": 15,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 591,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "13570.27",
+        "remainder": 16,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 592,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 152,
+        "cost_price": "8453.06",
+        "remainder": 20,
+        "name": "Logitech Eco-Friendly Tablet",
+        "description": "A ergonomic air purifier made with high-quality cotton."
+    },
+    {
+        "id": 593,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "13342.1",
+        "remainder": 6,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
+    },
+    {
+        "id": 594,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 150,
+        "cost_price": "16198.26",
+        "remainder": 10,
+        "name": "KitchenAid Handcrafted Blender",
+        "description": "A portable blender made with high-quality wood."
+    },
+    {
+        "id": 595,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 138,
+        "cost_price": "439.91",
+        "remainder": 9,
+        "name": "Panasonic Lightweight Vacuum Cleaner",
+        "description": "A lightweight backpack made with high-quality titanium."
+    },
+    {
+        "id": 596,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "14072.0",
+        "remainder": 6,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
+    },
+    {
+        "id": 597,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6624.57",
+        "remainder": 17,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 598,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 130,
+        "cost_price": "13119.63",
+        "remainder": 4,
+        "name": "Levi's Limited Edition Vacuum Cleaner",
+        "description": "A eco-friendly sneakers made with high-quality leather."
+    },
+    {
+        "id": 599,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "14821.41",
+        "remainder": 17,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
+    },
+    {
+        "id": 600,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 152,
+        "cost_price": "7804.2",
+        "remainder": 5,
+        "name": "Logitech Eco-Friendly Tablet",
+        "description": "A ergonomic air purifier made with high-quality cotton."
+    },
+    {
+        "id": 601,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "856.9",
+        "remainder": 6,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 602,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 129,
+        "cost_price": "11516.11",
+        "remainder": 8,
+        "name": "Bose Limited Edition Smartphone",
+        "description": "A waterproof backpack made with high-quality stainless steel."
+    },
+    {
+        "id": 603,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "2444.46",
+        "remainder": 12,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 604,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "2007.36",
+        "remainder": 16,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
+    },
+    {
+        "id": 605,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4798.09",
+        "remainder": 2,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 606,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 136,
+        "cost_price": "8122.06",
+        "remainder": 20,
+        "name": "Apple Deluxe Smartphone",
+        "description": "A premium tablet made with high-quality carbon fiber."
+    },
+    {
+        "id": 607,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6729.53",
+        "remainder": 6,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 608,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 144,
+        "cost_price": "2914.91",
+        "remainder": 16,
+        "name": "Lenovo Classic Camera",
+        "description": "A high-performance monitor made with high-quality bamboo."
+    },
+    {
+        "id": 609,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 125,
+        "cost_price": "2089.59",
+        "remainder": 1,
+        "name": "Philips Modern Laptop",
+        "description": "A ultra fitness tracker made with high-quality recycled plastic."
+    },
+    {
+        "id": 610,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 142,
+        "cost_price": "5487.43",
+        "remainder": 19,
+        "name": "HP Ergonomic Camera",
+        "description": "A deluxe speaker made with high-quality silicone."
+    },
+    {
+        "id": 611,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 145,
+        "cost_price": "2078.31",
+        "remainder": 11,
+        "name": "Dell Professional Mouse",
+        "description": "A limited edition keyboard made with high-quality polyester."
+    },
+    {
+        "id": 612,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 137,
+        "cost_price": "14876.72",
+        "remainder": 4,
+        "name": "Apple Portable Laptop",
+        "description": "A organic vacuum cleaner made with high-quality wood."
+    },
+    {
+        "id": 613,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 131,
+        "cost_price": "3164.23",
+        "remainder": 6,
+        "name": "LG Lightweight Gaming Chair",
+        "description": "A eco-friendly camera made with high-quality leather."
+    },
+    {
+        "id": 614,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 135,
+        "cost_price": "3634.81",
+        "remainder": 2,
+        "name": "JBL Premium Camera",
+        "description": "A wireless smartwatch made with high-quality glass."
+    },
+    {
+        "id": 615,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 123,
+        "cost_price": "18254.98",
+        "remainder": 2,
+        "name": "KitchenAid Compact Headphones",
+        "description": "A ultra mouse made with high-quality nylon."
+    },
+    {
+        "id": 616,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "2209.76",
+        "remainder": 7,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 617,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "2473.04",
+        "remainder": 15,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 618,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "9473.6",
+        "remainder": 16,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 619,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "12562.07",
+        "remainder": 9,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 620,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 144,
+        "cost_price": "3125.16",
+        "remainder": 4,
+        "name": "Lenovo Classic Camera",
+        "description": "A high-performance monitor made with high-quality bamboo."
+    },
+    {
+        "id": 621,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "13726.93",
+        "remainder": 2,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
+    },
+    {
+        "id": 622,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 134,
+        "cost_price": "4812.45",
+        "remainder": 1,
+        "name": "Lenovo Wireless Monitor",
+        "description": "A smart tablet made with high-quality aluminum."
+    },
+    {
+        "id": 623,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 124,
+        "cost_price": "13129.96",
+        "remainder": 9,
+        "name": "Canon Limited Edition Water Bottle",
+        "description": "A portable sneakers made with high-quality nylon."
+    },
+    {
+        "id": 624,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "2066.88",
+        "remainder": 17,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
+    },
+    {
+        "id": 625,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 146,
+        "cost_price": "1987.46",
+        "remainder": 9,
+        "name": "Cuisinart Ergonomic Smartphone",
+        "description": "A portable water bottle made with high-quality ceramic."
+    },
+    {
+        "id": 626,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 130,
+        "cost_price": "13674.03",
+        "remainder": 2,
+        "name": "Levi's Limited Edition Vacuum Cleaner",
+        "description": "A eco-friendly sneakers made with high-quality leather."
+    },
+    {
+        "id": 627,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 142,
+        "cost_price": "5684.07",
+        "remainder": 15,
+        "name": "HP Ergonomic Camera",
+        "description": "A deluxe speaker made with high-quality silicone."
+    },
+    {
+        "id": 628,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 138,
+        "cost_price": "393.47",
+        "remainder": 13,
+        "name": "Panasonic Lightweight Vacuum Cleaner",
+        "description": "A lightweight backpack made with high-quality titanium."
+    },
+    {
+        "id": 629,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "8633.09",
+        "remainder": 20,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 630,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6878.81",
+        "remainder": 13,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 631,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 131,
+        "cost_price": "3742.51",
+        "remainder": 7,
+        "name": "LG Lightweight Gaming Chair",
+        "description": "A eco-friendly camera made with high-quality leather."
+    },
+    {
+        "id": 632,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "10318.81",
+        "remainder": 5,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 633,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "842.4",
+        "remainder": 10,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 634,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 152,
+        "cost_price": "7098.88",
+        "remainder": 17,
+        "name": "Logitech Eco-Friendly Tablet",
+        "description": "A ergonomic air purifier made with high-quality cotton."
+    },
+    {
+        "id": 635,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "873.34",
+        "remainder": 20,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 636,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 150,
+        "cost_price": "14973.59",
+        "remainder": 13,
+        "name": "KitchenAid Handcrafted Blender",
+        "description": "A portable blender made with high-quality wood."
+    },
+    {
+        "id": 637,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 126,
+        "cost_price": "1825.9",
+        "remainder": 11,
+        "name": "Adidas Portable Mouse",
+        "description": "A modern coffee maker made with high-quality aluminum."
+    },
+    {
+        "id": 638,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 131,
+        "cost_price": "3353.64",
+        "remainder": 4,
+        "name": "LG Lightweight Gaming Chair",
+        "description": "A eco-friendly camera made with high-quality leather."
+    },
+    {
+        "id": 639,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 141,
+        "cost_price": "19869.44",
+        "remainder": 4,
+        "name": "KitchenAid Handcrafted Speaker",
+        "description": "A deluxe monitor made with high-quality cashmere."
+    },
+    {
+        "id": 640,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6876.22",
+        "remainder": 18,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
+    },
+    {
+        "id": 641,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 127,
+        "cost_price": "8573.59",
+        "remainder": 14,
+        "name": "HP Eco-Friendly Sneakers",
+        "description": "A premium keyboard made with high-quality aluminum."
+    },
+    {
+        "id": 642,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 150,
+        "cost_price": "14433.06",
+        "remainder": 1,
+        "name": "KitchenAid Handcrafted Blender",
+        "description": "A portable blender made with high-quality wood."
+    },
+    {
+        "id": 643,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 137,
+        "cost_price": "14689.93",
+        "remainder": 4,
+        "name": "Apple Portable Laptop",
+        "description": "A organic vacuum cleaner made with high-quality wood."
+    },
+    {
+        "id": 644,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 133,
+        "cost_price": "880.01",
+        "remainder": 20,
+        "name": "Logitech Deluxe Mouse",
+        "description": "A deluxe air purifier made with high-quality glass."
+    },
+    {
+        "id": 645,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 152,
+        "cost_price": "7476.11",
+        "remainder": 19,
+        "name": "Logitech Eco-Friendly Tablet",
+        "description": "A ergonomic air purifier made with high-quality cotton."
+    },
+    {
+        "id": 646,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 125,
+        "cost_price": "1964.2",
+        "remainder": 17,
+        "name": "Philips Modern Laptop",
+        "description": "A ultra fitness tracker made with high-quality recycled plastic."
+    },
+    {
+        "id": 647,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 151,
+        "cost_price": "2374.34",
+        "remainder": 11,
+        "name": "Dell Organic Keyboard",
+        "description": "A eco-friendly gaming chair made with high-quality aluminum."
+    },
+    {
+        "id": 648,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 128,
+        "cost_price": "13139.64",
+        "remainder": 1,
+        "name": "Logitech Professional Sneakers",
+        "description": "A lightweight blender made with high-quality wool."
+    },
+    {
+        "id": 649,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 143,
+        "cost_price": "9918.1",
+        "remainder": 16,
+        "name": "Dell Compact Blender",
+        "description": "A waterproof sneakers made with high-quality wood."
+    },
+    {
+        "id": 650,
+        "created": "2026-05-11T03:34:38.853389Z",
+        "nom_id": 132,
+        "cost_price": "6070.31",
+        "remainder": 10,
+        "name": "Philips High-Performance Speaker",
+        "description": "A compact smartphone made with high-quality wool."
     }
 ]
