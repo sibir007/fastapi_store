@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 import time
-from typing import Annotated, Any, Awaitable, Callable
+from typing import Annotated, Awaitable, Callable
 
 from fastapi import Depends, FastAPI, Request, Response, Security
 from fastapi.security import OAuth2PasswordRequestForm
@@ -10,9 +10,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from faststream.redis import RedisBroker
 
 
+from project.broker import get_broker_resoult_or_raise_http_exaption
 from project.broker_router import broker, broker_router
 
-from project.schemas_auth import TokenData, AuthUserData, Token, SUserOut, SUserIn
+from project.schemas_auth import (
+    STopup,
+    STopupIn,
+    STopupOut,
+    SUserName,
+    TokenData,
+    AuthUserData,
+    Token,
+    SUserOut,
+    SUserIn,
+)
 from project.lib_auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ALGORITHM,
@@ -21,8 +32,8 @@ from project.lib_auth import (
     get_token_username,
     verifiy_and_get_token_data,
 )
-from project.exceptions import HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION, raise_exaption
-from project.schemas_broker import UserBrokerResult
+from project.schemas_broker import STopupBrokerResult, SUserBrokerResult
+
 
 app = FastAPI()
 
@@ -31,26 +42,27 @@ async def get_current_user(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
     broker: Annotated[RedisBroker, Depends(broker)],
 ) -> SUserOut:
+    res_out: SUserOut = await get_broker_resoult_or_raise_http_exaption(broker, SUserName(username=token_data.username), "user",  SUserBrokerResult)
+    return res_out
+    # broker_response = await broker.request(token_data.username, list="user")
+    # broker_resoult: dict[str, Any] | None = await broker_response.decode()
 
-    broker_response = await broker.request(token_data.username, list="user")
-    broker_resoult: dict[str, Any] | None = await broker_response.decode()
+    # if broker_resoult is None:
+    #     raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION()
 
-    if broker_resoult is None:
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION()
+    # broker_resoult_obj: SUserBrokerResult = SUserBrokerResult(**broker_resoult)
+    # if broker_resoult_obj.exeption:
+    #     raise_exaption(
+    #         broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes
+    #     )
 
-    broker_resoult_obj: UserBrokerResult = UserBrokerResult(**broker_resoult)
-    if broker_resoult_obj.exeption:
-        raise_exaption(
-            broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes
-        )
+    # user = broker_resoult_obj.result
+    # if not user:  # should not happen, but just in case
+    #     raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
+    #         "Internal server error during user retrieval, incompatible service state"
+    #     )
 
-    user = broker_resoult_obj.result
-    if not user:  # should not happen, but just in case
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
-            "Internal server error during user retrieval, incompatible service state"
-        )
-
-    return SUserOut(**user.model_dump())
+    # return SUserOut(**user.model_dump())
 
 
 @broker_router.post("/api/auth/token/")
@@ -59,29 +71,11 @@ async def login_for_access_token(
     broker: Annotated[RedisBroker, Depends(broker)],
 ) -> Token:
 
-    # await broker.connect()
-    auth_response = await broker.request(
+    user: SUserOut = await get_broker_resoult_or_raise_http_exaption(
+        broker, 
         AuthUserData(username=form_data.username, password=form_data.password),
-        list="auth",
-    )
-    auth_resoult: dict[str, Any] | None = await auth_response.decode()
-
-    if auth_resoult is None:
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
-            "Internal server error during authentication"
-        )
-
-    auth_resoult_obj: UserBrokerResult = UserBrokerResult(**auth_resoult)
-    if auth_resoult_obj.exeption:
-        raise_exaption(
-            auth_resoult_obj.exeption.code, auth_resoult_obj.exeption.detailes
-        )
-
-    user = auth_resoult_obj.result
-
-    if not user:  # should not happen, but just in case
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
-            "Internal server error during authentication, incompatible service state"
+        "auth",
+        SUserBrokerResult
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -103,30 +97,15 @@ async def get_token_data(
     return token_data
 
 
-@app.post("/api/auth/register/")
+@broker_router.post("/api/auth/register/")
 async def register_user(
     user_data: SUserIn, broker: Annotated[RedisBroker, Depends(broker)]
 ) -> SUserOut:
-
-    broker_response = await broker.request(user_data, list="register")
-    broker_resoult: dict[str, Any] | None = await broker_response.decode()
-
-    if broker_resoult is None:
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
-            "Internal server error during registration"
-        )
-
-    broker_resoult_obj: UserBrokerResult = UserBrokerResult(**broker_resoult)
-    if broker_resoult_obj.exeption:
-        raise_exaption(
-            broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes
-        )
-
-    user = broker_resoult_obj.result
-
-    if not user:  # should not happen, but just in case
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
-            "Internal server error during registration, incompatible service state"
+    user: SUserOut = await get_broker_resoult_or_raise_http_exaption(
+        broker,
+        user_data,
+        "register",
+        SUserBrokerResult
         )
 
     return user
@@ -145,12 +124,22 @@ async def read_users_me(
 ) -> SUserOut:
     return current_user
 
+@broker_router.post("/api/auth/topup/")
+async def balance_topup(
+    topup: STopupIn,
+    username: Annotated[str, Depends(get_token_username)],
+    broker: Annotated[RedisBroker, Depends(broker)],
+) -> STopupOut:
+    
+    topup_out: STopupOut = await get_broker_resoult_or_raise_http_exaption(
+        broker,
+        STopup(ammount=topup.ammount, username=username),
+        "topup",
+        STopupBrokerResult
+        )
+    
 
-# @app.get("/users/me/items/")
-# async def read_own_items(
-#     current_user: Annotated[str, Security(get_token_username, scopes=["items"])],
-# ) -> list[dict[str, str]]:
-#     return [{"item_id": "Foo", "owner": current_user}]
+    return topup_out
 
 
 @app.middleware("http")

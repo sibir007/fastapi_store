@@ -1,0 +1,136 @@
+
+from fastapi import status
+from faststream import Logger
+from pydantic import BaseModel
+
+from project.database.dao_products_util import get_nomenclatures, get_products_summary_for_byer
+from project.schemas import SBool
+from project.schemas_broker import SBrokerExeption, SProductsSummaryOutByerBrokerResoult, SVerifyReqversBrokerResult
+from project.schemas_products import SNomId, SProductSummaryOutByer
+
+from project.service import service
+from project.broker import broker
+# from project.broker_router import broker, broker_router
+
+
+@broker.subscriber(list="products")
+async def get_products_handler(_: BaseModel, logger: Logger) -> SProductsSummaryOutByerBrokerResoult:
+    logger.info(f"get products handler: accept")
+    try:
+        products: list[SProductSummaryOutByer] = await get_products_summary_for_byer()
+    except Exception as e:
+        return SProductsSummaryOutByerBrokerResoult(
+            exeption=SBrokerExeption(
+                code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+            )
+        )
+
+    return SProductsSummaryOutByerBrokerResoult(resoult=products)
+
+# "verify-product"
+
+# SNomId(nom_id=nom_id),
+#         "verify-product",
+#         ,
+        
+
+@broker.subscriber(list="verify-product")
+async def verify_product_handler(nom_id: SNomId, logger: Logger) -> SVerifyReqversBrokerResult:
+    logger.info(f"verify product handler: nom_id {nom_id}")
+    try:
+        noms = await get_nomenclatures([nom_id.nom_id])
+    except Exception as e:
+        return SVerifyReqversBrokerResult(
+            exeption=SBrokerExeption(
+                code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+            )
+        )
+    return SVerifyReqversBrokerResult(resoult=SBool(result=bool(noms)))
+
+
+
+
+
+
+
+
+# @broker.subscriber(list="user")
+# async def get_user_handler(username: str, logger: Logger) -> SUserBrokerResult:
+
+#     logger.info(f"get user handler message: username {username}")
+#     try:
+#         user = await get_user_by_name(username)
+#     except Exception as e:
+#         return SUserBrokerResult(
+#             exeption=SBrokerExeption(
+#                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+#             )
+#         )
+#     if user is None:
+#         return SUserBrokerResult(
+#             exeption=SBrokerExeption(
+#                 code=status.HTTP_404_NOT_FOUND, detailes="User not found"
+#             )
+#         )
+
+#     return SUserBrokerResult(resoult=user)
+
+
+# @broker.subscriber(list="topup")
+# async def topup_handler(topup: STopup, logger: Logger) -> STopupBrokerResult:
+
+#     logger.info(
+#         f"topup handler message: username {topup.username}, ammount {topup.ammount}"
+#     )
+#     try:
+#         topup_out = await topup_none_if_user_not_found(topup)
+#     except Exception as e:
+#         return STopupBrokerResult(
+#             exeption=SBrokerExeption(
+#                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+#             )
+#         )
+#     if topup_out is None:
+#         return STopupBrokerResult(
+#             exeption=SBrokerExeption(
+#                 code=status.HTTP_404_NOT_FOUND, detailes="User not found"
+#             )
+#         )
+
+#     return STopupBrokerResult(resoult=topup_out)
+
+
+# @broker.subscriber(list="register")
+# async def user_register_handler(user_reg: SUserIn, logger: Logger) -> SUserBrokerResult:
+#     user_dict = user_reg.model_dump()
+#     user_db = SUserInDB(
+#         hashed_password=get_password_hash(user_dict.get("password", "")), **user_dict
+#     )
+#     try:
+#         user_out: SUserOut | None = await create_user(user_db)
+#         if user_out is None:
+#             return SUserBrokerResult(
+#                 exeption=SBrokerExeption(
+#                     code=status.HTTP_409_CONFLICT,
+#                     detailes="User with the given name or email already exists",
+#                 )
+#             )
+
+#         logger.info(f"user_out: {user_out}")
+#     except Exception as e:
+#         return SUserBrokerResult(
+#             exeption=SBrokerExeption(
+#                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+#             )
+#         )
+#     return SUserBrokerResult(resoult=user_out)
+
+
+@broker.subscriber(list="test")
+async def base_handler(msg: str, logger: Logger) -> None:
+    logger.info(f"test message: {msg}")
+
+
+@service.after_startup
+async def test():
+    await broker.publish("test startup", list="test")

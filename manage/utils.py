@@ -7,16 +7,24 @@ from pydantic import BaseModel, TypeAdapter
 
 
 
-def save_list_to_json_file(out_file: Path, obj_list: Iterable[BaseModel], mode_type: type) -> None:
-    adapter: TypeAdapter[Iterable[Any]] = TypeAdapter(Iterable[mode_type]) # type: ignore
+def save_list_to_json_file(out_file: Path, obj_list: Iterable[BaseModel], mode_type: type[BaseModel]) -> None:
+    # with open()
+    adapter: TypeAdapter[Iterable[BaseModel]] = TypeAdapter(Iterable[mode_type])   # type: ignore
     obj_json = adapter.dump_json(obj_list, indent=4)
-    with out_file.open("wb") as f:
+    with out_file.open("bw+") as f:
         f.write(obj_json)
+
+# def save_list_to_json_file(out_file: Path, obj_list: Iterable[BaseModel], mode_type: type) -> None:
+#     adapter: TypeAdapter[Iterable[Any]] = TypeAdapter(Iterable[mode_type]) # type: ignore
+#     obj_json = adapter.dump_json(obj_list, indent=4)
+#     with out_file.open("wb") as f:
+#         f.write(obj_json)
+
 
 
 def save_obj_to_json_file(out_file: Path, obj: BaseModel) -> None:
     obj_json = obj.model_dump_json(indent=4)
-    with out_file.open("w") as f:
+    with out_file.open("w+") as f:
         f.write(obj_json)
 
 

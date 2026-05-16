@@ -48,16 +48,27 @@ async def add_nomenclatures(
 #         nom_out = MNomenclature_to_SNomenclatureOut(nom_m)
 #     return nom_out
 
+# class SNomFilter(BaseModel):
+#     name: str | None = None
+#     description: str | None = None
+#     min_price: Decimal | None = None
+#     max_price: Decimal | None = None
 
-async def get_nomenclatures() -> list[SNomenclatureOut]:
+
+async def get_nomenclatures(ids: list[int] | None = None) -> list[SNomenclatureOut]:
     async with async_session() as session:
-        nom_m_list_res = await session.execute(select(MNomenclature))
+        stm = select(MNomenclature)
+        if ids is not None:
+            stm = stm.where(MNomenclature.id.in_(ids))
+        nom_m_list_res = await session.execute(stm)
         nom_m_list = nom_m_list_res.scalars().all()
         nom_out = [MNomenclature_to_SNomenclatureOut(n) for n in nom_m_list]
     return nom_out
 
 
-async def get_products_by_id(ids: Iterable[int]) -> list[SProsuctDbOutFull]:
+
+
+async def get_products_by_id(ids: Iterable[int] | None = None) -> list[SProsuctDbOutFull]:
     async with async_session() as session:
         stmt = (
             select(
@@ -71,8 +82,9 @@ async def get_products_by_id(ids: Iterable[int]) -> list[SProsuctDbOutFull]:
                 MNomenclature.markup,
             )
             .join(MNomenclature.products)
-            .where(MProduct.id.in_(ids))
         )
+        if ids is not None:
+            stmt = stmt.where(MProduct.id.in_(ids))
         pr_m_list_res = await session.execute(stmt)
         pr_m_list = pr_m_list_res.all()
         pr_out_list = [SProsuctDbOutFull(**pr._asdict()) for pr in pr_m_list] # type: ignore
@@ -103,8 +115,15 @@ async def add_products(products: Iterable[SProductIn]) -> list[SProsuctDbOutFull
 #         product_out = MProduct_to_SProsuctDbOut(pr_m)
 #     return product_out
 
+async def get_nomenclature_by_id(id: int) -> SNomenclatureOut | None:
+    async with async_session() as session:
+        nom_m_res = await session.execute(select(MNomenclature).where(MNomenclature.id == id))
+        nom_m = nom_m_res.scalar_one_or_none()
+        if nom_m is None:
+            return None
+        return MNomenclature_to_SNomenclatureOut(nom_m)
 
-async def get_products_summary_for_admin() -> list[SProductSummaryOutAdmin]:
+async def get_products_summary_for_admin(ids: list[int] | None = None) -> list[SProductSummaryOutAdmin]:
     """
     return products grouped by nom_id with sum of
     remainder quantity and maximum cost price
@@ -124,6 +143,8 @@ async def get_products_summary_for_admin() -> list[SProductSummaryOutAdmin]:
             .join(MNomenclature.products)
             .group_by(MNomenclature.id)
         )
+        if ids:
+            stm = stm.where(MNomenclature.id.in_(ids))
         r = await session.execute(stm)
 
         res = r.all()
@@ -148,8 +169,8 @@ def SProductSummaryOutAdmin_to_SProductSummaryOutByer(
     )
 
 
-async def get_products_summary_for_byer() -> list[SProductSummaryOutByer]:
-    res_summ = await get_products_summary_for_admin()
+async def get_products_summary_for_byer(ids: list[int] | None = None) -> list[SProductSummaryOutByer]:
+    res_summ = await get_products_summary_for_admin(ids)
     res_summ_byer = [
         SProductSummaryOutAdmin_to_SProductSummaryOutByer(summ_admin_m)
         for summ_admin_m in res_summ

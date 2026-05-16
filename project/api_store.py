@@ -1,14 +1,21 @@
-from fastapi import FastAPI, Security
+from typing import Annotated
+
+from fastapi import Depends, FastAPI, Security
+from faststream.redis import RedisBroker
+from pydantic import BaseModel
+from project.broker import get_broker_resoult_or_raise_http_exaption
+from project.broker_router import broker
+from project.broker_router import broker, broker_router
 from project.lib_auth import get_token_username
 
 from fastapi.middleware.cors import CORSMiddleware
 
 from project.database.dao_products_util import (
-    get_products_summary_for_byer,
     get_products_summary_for_admin,
     add_nomenclatures as add_nomenclatures_util,
     add_products as add_products_util,
 )
+from project.schemas_broker import SProductsSummaryOutByerBrokerResoult
 from project.schemas_products import (
     SNomenclatureIn,
     SNomenclatureOut,
@@ -20,12 +27,19 @@ from project.schemas_products import (
 
 app = FastAPI()
 
+class SEmpty(BaseModel):
+    pass
 
-@app.get(
+@broker_router.get(
     "/api/products/", dependencies=[Security(get_token_username, scopes=["items"])]
 )
-async def get_products() -> list[SProductSummaryOutByer]:
-    return await get_products_summary_for_byer()
+async def get_products(
+    broker: Annotated[RedisBroker, Depends(broker)],
+) -> list[SProductSummaryOutByer]:
+    return await get_broker_resoult_or_raise_http_exaption(
+        broker, SEmpty(), "products", SProductsSummaryOutByerBrokerResoult
+    )
+
 
 
 @app.get(
@@ -61,3 +75,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(broker_router)

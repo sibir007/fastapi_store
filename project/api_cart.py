@@ -1,57 +1,76 @@
-from fastapi import FastAPI, Security
-from project.lib_auth import get_token_username
+import time
+from typing import Annotated, Awaitable, Callable
 
+from fastapi import Depends, FastAPI, Request, Response, Security
 from fastapi.middleware.cors import CORSMiddleware
 
-from project.database.dao_products_util import (
-    get_products_summary_for_byer,
-    get_products_summary_for_admin,
-    add_nomenclatures as add_nomenclatures_util,
-    add_products as add_products_util,
+from faststream.redis import RedisBroker
+
+
+from project.broker import get_broker_resoult_or_raise_http_exaption
+from project.broker_router import broker, broker_router
+
+from project.lib_auth import (
+    get_token_username,
 )
-from project.schemas_products import (
-    SNomenclatureIn,
-    SNomenclatureOut,
-    SProductIn,
-    SProductSummaryOutAdmin,
-    SProductSummaryOutByer,
-    SProsuctDbOutFull,
-)
+from project.schemas_broker import SCartBrokerResult, SCatrItemBrokerResoult
+from project.schemas_cart import SCartItem, SCart, SCartItemIn, SCartReq
 
 app = FastAPI()
 
 
-@app.get(
-    "/api/products/", dependencies=[Security(get_token_username, scopes=["items"])]
-)
-async def get_products() -> list[SProductSummaryOutByer]:
-    return await get_products_summary_for_byer()
+
+@broker_router.get("/api/cart/")
+async def get_cart(
+    username: Annotated[str, Security(get_token_username, scopes=["items"])],
+    broker: Annotated[RedisBroker, Depends(broker)],
+) -> SCart:
+    return await get_broker_resoult_or_raise_http_exaption(
+        broker, SCartReq(username=username), "get-cart", SCartBrokerResult
+    )
 
 
-@app.get(
-    "/api/admin/products/",
-    dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
-)
-async def get_admin_products() -> list[SProductSummaryOutAdmin]:
-    return await get_products_summary_for_admin()
+@broker_router.post("/api/cart/items/" , description="if quantity=0 - delete cart item, if quantity>0 will create (or update if exist) cart item")
+async def add_update_or_delete_cat_item(
+    item: SCartItem,
+    username: Annotated[str, Security(get_token_username, scopes=["items"])],
+    broker: Annotated[RedisBroker, Depends(broker)],
+) -> SCartItem:
+
+    return await get_broker_resoult_or_raise_http_exaption(
+        broker,
+        SCartItemIn(**item.model_dump(), username=username),
+        "add-cart-item",
+        SCatrItemBrokerResoult,
+    )
 
 
-@app.post(
-    "/api/admin/products/",
-    dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
-)
-async def add_products(products: list[SProductIn]) -> list[SProsuctDbOutFull]:
-    return await add_products_util(products)
 
 
-@app.post(
-    "/api/admin/nomenclatures/",
-    dependencies=[Security(get_token_username, scopes=["PRODUCT_CREATE"])],
-)
-async def add_nomenclatures(
-    nomenclatures: list[SNomenclatureIn],
-) -> list[SNomenclatureOut]:
-    return await add_nomenclatures_util(nomenclatures)
+# @app.delete("/api/cart/items/{id}/")
+async def delete_cart_item(
+    id: int,
+    username: Annotated[str, Security(get_token_username, scopes="items")],
+    broker: Annotated[RedisBroker, Depends(broker)],
+) -> SCartItem:
+
+    return await get_broker_resoult_or_raise_http_exaption(
+        broker,
+        SCartItemIn(nom_id=id, quantity=0, username=username),
+        "delete-cart-item",
+        SCatrItemBrokerResoult,
+    )
+
+
+@app.middleware("http")
+async def add_process_time_header(
+    request: Request, call_next: Callable[[Request], Awaitable[Response]]
+) -> Response:
+    start_time = time.perf_counter()
+    response: Response = await call_next(request)
+    process_time = time.perf_counter() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 
 app.add_middleware(
@@ -61,3 +80,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(broker_router)

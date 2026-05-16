@@ -1,14 +1,16 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, PlainSerializer
+from pydantic import BaseModel, ConfigDict, Field, PlainSerializer
 
 
 from decimal import Decimal
 from typing import Annotated
 
-
-class SProducIntBase(BaseModel):
+class SNomId(BaseModel):
     nom_id: int
+
+
+class SProducIntBase(SNomId):
     cost_price: Annotated[
         Decimal,
         PlainSerializer(float, when_used='json'),
@@ -41,6 +43,8 @@ class SProsuctDbOut(BaseModel):
 
 
 class SProsuctDbOutFull(SProsuctDbOut):
+    model_config = ConfigDict(from_attributes=True)
+    
     name: str
     description: str | None
     markup: Annotated[
@@ -63,7 +67,7 @@ class SNomenclatureOut(SNomenclatureIn):
     created: datetime
 
 
-class SProductSummaryOutBase(BaseModel):
+class SProductSummaryOutBase(BaseModel):    
     id: int
     name: str
     description: str | None

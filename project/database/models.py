@@ -137,3 +137,11 @@ class MPermission(MBase):
         back_populates="permissions",
         cascade="all, delete",
     )
+
+
+class MCartItem(MBase):
+    __tablename__= "catr_itemms"    
+
+    username: Mapped[str]
+    nom_id: Mapped[int]
+    quantity: Mapped[int]

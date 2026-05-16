@@ -1,54 +1,54 @@
-
 services:
-  queue:
+  broker:
     image: redis:8.6.2
-    container_name: redis
+    container_name: broker
     ports:
       - "${REDIS_PORT}:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 5s
       timeout: 3s
       retries: 5
       start_period: 10s
   db:
     image: postgres:18.3
-    container_name: postgres
+    container_name: db
     restart: always
-    # env_file:
-    #   - .env
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: app
+    env_file:
+      - ./.env
+      # environment:
+      # POSTGRES_USER: user
+      # PGUSER: app
+      # POSTGRES_PASSWORD: pass
+      # POSTGRES_DB: app
       # POSTGRES_USER: ${POSTGRES_USER}  
       # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
       # POSTGRES_DB: ${POSTGRES_DB} 
-      PGDATA: /var/lib/postgresql/data/pgdata    
+      # PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/pgdata
+    healthcheck:
+
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+
+      interval: 5s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
   adminer:
     image: adminer
     restart: always
     ports:
       - "${ADMINER_PORT}:8080"
 
-  worker_auth:
-    container_name: worker_auth
+  service_auth:
+    container_name: service_auth
     build: .
-    # network_mode: host
-    # ports:
-    #   - 8004:8000
-    command: faststream run project.worker_auth:worker
-    # command: uvicorn fastapi_app.main:app --host 0.0.0.0 --reload
-    # volumes:
-    #   - ./project:/usr/src/app
+    command: faststream run project.service_auth:service
     env_file: ".env"
-    # # environment:
-    # #   - CELERY_BROKER_URL=redis://redis:6379/0
-    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
     network_mode: host
     develop:
       watch:
@@ -57,18 +57,56 @@ services:
           target: /app/project
         - action: rebuild
           path: requirements.txt
-    # depends_on:
-    #   - redis
+
     depends_on:
-      queue:
+      broker:
         condition: service_healthy
+      db:
+        condition: service_healthy
+
+  service_store:
+    container_name: service_store
+    build: .
+    command: faststream run project.service_store:service
+    env_file: ".env"
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+
+    depends_on:
+      broker:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
+  service_cart:
+    container_name: service_cart
+    build: .
+    command: faststream run project.service_cart:service
+    env_file: ".env"
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+
+    depends_on:
+      broker:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
   api_auth:
     container_name: api_auth
     build: .
-    # network_mode: host
-    # ports:
-    #   - 8004:8000
-    # command: faststream run project.auth_api:app
     command: uvicorn project.api_auth:app --host 0.0.0.0 --port "${AUTH_API_PORT}"
     # command: uvicorn project.auth_api:app --host 0.0.0.0 --reload
     # volumes:
@@ -86,25 +124,16 @@ services:
         - action: rebuild
           path: requirements.txt
     depends_on:
-      - worker
+      - service_auth
       # - queue:
       #     condition: service_healthy
 
   api_store:
     container_name: api_store
     build: .
-    # network_mode: host
-    # ports:
-    #   - 8004:8000
-    # command: faststream run project.auth_api:app
     command: uvicorn project.api_store:app --host 0.0.0.0 --port "${STORE_API_PORT}"
-    # command: uvicorn project.auth_api:app --host 0.0.0.0 --reload
-    # volumes:
-    #   - ./project:/usr/src/app
     env_file: ".env"
-    # # environment:
-    # #   - CELERY_BROKER_URL=redis://redis:6379/0
-    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
     network_mode: host
     develop:
       watch:
@@ -114,59 +143,72 @@ services:
         - action: rebuild
           path: requirements.txt
     depends_on:
-      - api_auth
-      # - queue:
-      #     condition: service_healthy
+      - service_store
 
+  api_cart:
+    container_name: api_cart
+    build: .
+    command: uvicorn project.api_cart:app --host 0.0.0.0 --port "${CART_API_PORT}"
+    env_file: ".env"
 
-  # worker:
-  #   container_name: worker
-  #   build: ./project
-  #   command: celery -A selery_app.app:app worker --loglevel=info --logfile=logs/celery.log -P gevent
-  #   volumes:
-  #     - ./project:/usr/src/app
-  #   env_file: ".env"
-  #   # environment:
-  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
-  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
-  #   network_mode: host
-  #   depends_on:
-  #     - redis
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+    depends_on:
+      - service_cart
+      # worker:
+      #   container_name: worker
+      #   build: ./project
+      #   command: celery -A selery_app.app:app worker --loglevel=info --logfile=logs/celery.log -P gevent
+      #   volumes:
+      #     - ./project:/usr/src/app
+      #   env_file: ".env"
+      #   # environment:
+      #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+      #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      #   network_mode: host
+      #   depends_on:
+      #     - redis
 
-  # beat:
-  #   container_name: beat
-  #   build: ./project
-  #   command: celery -A selery_app.app:app beat --loglevel=info --logfile=logs/beat.log
-  #   volumes:
-  #     - ./project:/usr/src/app
-  #   env_file: ".env"
-  #   # environment:
-  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
-  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
-  #   network_mode: host
-  #   depends_on:
-  #     - redis
-  #     - worker
-      
-  # dashboard:
-  #   build: ./project
-  #   command: celery --broker=${CELERY_BROKER_URL} flower --port=5555
-  #   network_mode: host
-  #   # ports:
-  #   #   - 5556:5555
-  #   env_file: ".env"
-  #   # environment:
-  #   #   - CELERY_BROKER_URL=redis://redis:6379/0
-  #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
-  #   depends_on:
-  #     - web
-  #     - redis
-  #     - worker
-  #     - beat
+      # beat:
+      #   container_name: beat
+      #   build: ./project
+      #   command: celery -A selery_app.app:app beat --loglevel=info --logfile=logs/beat.log
+      #   volumes:
+      #     - ./project:/usr/src/app
+      #   env_file: ".env"
+      #   # environment:
+      #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+      #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      #   network_mode: host
+      #   depends_on:
+      #     - redis
+      #     - worker
 
-  # redis:
-  #   image: redis:latest
-  #   container_name: redis
+      # dashboard:
+      #   build: ./project
+      #   command: celery --broker=${CELERY_BROKER_URL} flower --port=5555
+      #   network_mode: host
+      #   # ports:
+      #   #   - 5556:5555
+      #   env_file: ".env"
+      #   # environment:
+      #   #   - CELERY_BROKER_URL=redis://redis:6379/0
+      #   #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      #   depends_on:
+      #     - web
+      #     - redis
+      #     - worker
+      #     - beat
+
+      # redis:
+      #   image: redis:latest
+      #   container_name: redis
 
 volumes:
   pgdata:

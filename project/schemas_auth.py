@@ -1,10 +1,11 @@
+from decimal import Decimal
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, PlainSerializer
 
 
-from pydantic import BaseModel, EmailStr
-
-
-
-
+class SUserName(BaseModel):
+    username: str
 
 
 class Token(BaseModel):
@@ -32,9 +33,16 @@ class SUserInDB(SUserBase):
     hashed_password: str
 
 
-class SUserOut(SUserBase):
-    permissions: list[str] = []
+class SUserWithoutPermission(SUserBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    balance: float
     disabled: bool = False
+
+
+class SUserOut(SUserWithoutPermission):
+
+    permissions: list[str] = []
 
 
 class AuthUserData(BaseModel):
@@ -58,7 +66,32 @@ class SPermissionOut(SPermissionIn):
     id: int
 
 
+class STopupOut(BaseModel):
+    topup: Annotated[
+        Decimal,
+        PlainSerializer(float, when_used="json"),
+        Field(
+            description="The ammount of topup, with 2 decimal places",
+        ),
+    ]
+    balance: Annotated[
+        Decimal,
+        PlainSerializer(float, when_used="json"),
+        Field(
+            description="The balance past the topup, with 2 decimal places",
+        ),
+    ]
 
 
+class STopupIn(BaseModel):
+    ammount: Annotated[
+        Decimal,
+        PlainSerializer(float, when_used="json"),
+        Field(
+            description="The ammount to topup, with 2 decimal places",
+        ),
+    ]
 
 
+class STopup(STopupIn):
+    username: str

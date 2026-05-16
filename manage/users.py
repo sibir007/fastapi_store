@@ -25,7 +25,7 @@ from manage.utils import save_list_to_json_file
 # logger = logger.getLogger(__name__)
 
 
-USER_FILE = "scripts/users.json"
+USER_FILE = "manage/users.json"
 
 fake = Faker()
 

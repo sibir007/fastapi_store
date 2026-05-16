@@ -1,12 +1,14 @@
 from typing import Generator, Iterable
 
+from sqlalchemy import select
+
 
 from project.database.dao import (
     MPermission,
     PermissionDAO,
     UserDAO,
 )
-from project.database.dao_util import clear_table # type: ignore
+from project.database.dao_util import clear_table  # type: ignore
 from project.database.models import MUser, Permission
 from project.database.session import async_session
 
@@ -14,6 +16,9 @@ from project.database.session import async_session
 from project.schemas_auth import (
     SPermissionIn,
     SPermissionOut,
+    STopup,
+    STopupOut,
+    SUserWithoutPermission,
     UserFilter,
     SUserInDB,
     SUserOut,
@@ -130,3 +135,24 @@ async def create_update_superuser(superuser: SUserInDB) -> SUserOut:
     return out_result
 
 
+async def topup_none_if_user_not_found(topup: STopup) -> STopupOut | None:
+    async with async_session() as session:
+        users_dao = UserDAO(session)
+        user_m = await users_dao.get_user_by_name(topup.username)
+        if not user_m:
+            return None
+        user_m.balance += topup.ammount
+        await session.commit()
+        topup_out = STopupOut(topup=topup.ammount, balance=user_m.balance)
+    return topup_out
+
+
+async def get_users_without_permissions() -> list[SUserWithoutPermission]:
+    async with async_session() as sesion:
+        users_res = await sesion.scalars(select(MUser))
+        users_list = users_res.all()
+        users_out_list = [SUserWithoutPermission.model_validate(u) for u in users_list]
+    return users_out_list
+
+async def get_users_names() -> list[str]:
+    return [n.username for n in await get_users_without_permissions()]

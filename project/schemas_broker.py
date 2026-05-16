@@ -1,16 +1,45 @@
 from pydantic import BaseModel
 
+from project.schemas import SBool
+from project.schemas_auth import STopupOut
 from project.schemas_auth import SUserOut
+from project.schemas_cart import SCartItem, SCart
+from project.schemas_products import SProductSummaryOutByer
 
 
-class BrokerExeption(BaseModel):
+class SBrokerExeption(BaseModel):
     code: int
     detailes: str
 
 
-class BorkerResoultBase(BaseModel):
-    exeption: BrokerExeption | None = None
+class SBorkerResoultBase[T](BaseModel):
+    resoult: T | None = None
+    exeption: SBrokerExeption | None = None
 
 
-class UserBrokerResult(BorkerResoultBase):
-    result: SUserOut | None = None
+class SUserBrokerResult(SBorkerResoultBase[SUserOut]):
+    pass
+
+
+# type SVerifyReqversBrokerResult = SBorkerResoultBase[SBool] 
+
+class SVerifyReqversBrokerResult(SBorkerResoultBase[SBool]):
+    pass
+
+
+class STopupBrokerResult(SBorkerResoultBase[STopupOut]):
+    pass
+
+
+class SCartBrokerResult(SBorkerResoultBase[SCart]):
+    pass
+
+
+class SCatrItemBrokerResoult(SBorkerResoultBase[SCartItem]):
+    pass
+
+
+class SProductsSummaryOutByerBrokerResoult(
+    SBorkerResoultBase[list[SProductSummaryOutByer]]
+):
+    pass
