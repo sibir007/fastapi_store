@@ -38,11 +38,11 @@ services:
       retries: 5
       start_period: 80s
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "${ADMINER_PORT}:8080"
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - "${ADMINER_PORT}:8080"
 
   service_auth:
     container_name: service_auth
@@ -103,6 +103,51 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
+
+  service_scheduler:
+    container_name: service_scheduler
+    build: .
+    command: uvicorn project.servece_scheduler:app --host localhost --port "${SCHEDULER_SERV_PORT}"
+    env_file: ".env"
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+
+    depends_on:
+      broker:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
+  api_scheduler:
+    container_name: api_scheduler
+    build: .
+    command: uvicorn project.api_scheduler:app --host 0.0.0.0 --port "${SCHEDULER_API_PORT}"
+    # command: uvicorn project.auth_api:app --host 0.0.0.0 --reload
+    # volumes:
+    #   - ./project:/usr/src/app
+    env_file: ".env"
+    # # environment:
+    # #   - CELERY_BROKER_URL=redis://redis:6379/0
+    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+    depends_on:
+      - service_scheduler
+      # - queue:
+      #     condition: service_healthy
+
 
   api_auth:
     container_name: api_auth
