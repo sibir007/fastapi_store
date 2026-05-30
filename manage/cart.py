@@ -9,8 +9,8 @@ import typer
 
 import asyncio
 
-from project.database.dao_cart_util import add_update_delete_cart_item, clear_cart_items_table, get_all_cards
-from project.database.dao_users_util import get_users_names
+from project.database.dao_cart import add_update_delete_cart_item, clear_cart_items_table, get_all_cards
+from project.database.dao_users import get_users_names
 from project.schemas_cart import SCartItemDbOut, SCartItemIn
 from project.schemas_products import (
     SProductSummaryOutByer,

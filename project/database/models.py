@@ -8,18 +8,14 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from typing_extensions import Annotated
 
+from project.schemas import OrderStatus
+
 intpk = Annotated[int, mapped_column(primary_key=True)]
 timestamp = Annotated[
     datetime,
     mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False),
 ]
 str_uniq = Annotated[str, mapped_column(unique=True, nullable=False)]
-
-
-class MStatus(enum.Enum):
-    PENDING = "pending"
-    RECEIVED = "received"
-    COMPLETED = "completed"
 
 
 class MBase(AsyncAttrs, DeclarativeBase):
@@ -145,3 +141,28 @@ class MCartItem(MBase):
     username: Mapped[str]
     nom_id: Mapped[int]
     quantity: Mapped[int]
+
+
+class MOrder(MBase):
+    __tablename__ = "orders"
+    created_at: Mapped[timestamp]
+    username: Mapped[str]
+    status: Mapped[OrderStatus] = mapped_column(default=OrderStatus.WAITING)
+    items: Mapped[list["MOrderItem"]] = relationship(
+        "MOrderItem",
+        back_populates="order",
+        lazy="selectin",
+        cascade="all, delete",
+    )
+
+class MOrderItem(MBase):
+    __tablename__ = "order_items"
+
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
+    order: Mapped[MOrder] = relationship(
+        MOrder,
+        back_populates="items",
+    )
+    nom_id: Mapped[int]
+    quantity: Mapped[int]
+    byer_price: Mapped[Decimal]

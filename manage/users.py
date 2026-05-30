@@ -13,7 +13,7 @@ from typing_extensions import Annotated
 import typer
 from project.lib_auth import get_password_hash
 from project.schemas_auth import SUserIn, SUserInDB, SUserOut
-from project.database.dao_users_util import (
+from project.database.dao_users import (
     create_update_superuser,
     clear_users_table,
     create_users,

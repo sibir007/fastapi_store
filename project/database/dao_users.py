@@ -1,15 +1,14 @@
-from typing import Generator, Iterable
+from typing import Generator, Iterable, cast
 
 from sqlalchemy import select
 
 
 from project.database.dao import (
-    MPermission,
-    PermissionDAO,
-    UserDAO,
+    BaseDAO,
+    logger,
 )
-from project.database.dao_util import clear_table  # type: ignore
-from project.database.models import MUser, Permission
+from project.database.dao import clear_table
+from project.database.models import MUser, MPermission, Permission
 from project.database.session import async_session
 
 
@@ -25,6 +24,18 @@ from project.schemas_auth import (
 )
 
 
+class PermissionDAO(BaseDAO[MPermission]):
+    model = MPermission
+
+    async def add_permissions(
+        self, permissions: Iterable[SPermissionIn]
+    ) -> list[MPermission]:
+        return await self.add_many(permissions)
+
+    async def add_permission(self, permission: SPermissionIn) -> MPermission:
+        return await self.add(permission)
+
+
 async def load_permissions() -> Generator[SPermissionOut, None, None]:
     permissions = (
         SPermissionIn(name=perm.name, desctription=perm.value) for perm in Permission
@@ -36,6 +47,75 @@ async def load_permissions() -> Generator[SPermissionOut, None, None]:
         out_result = (SPermissionOut(**perm.to_dict()) for perm in result)
 
     return out_result
+
+
+class UserDAO(BaseDAO[MUser]):
+    model = MUser
+
+    async def get_user_by_name(self, username: str) -> MUser | None:
+
+        user: MUser | None = cast(
+            MUser, await self.find_one_or_none(filters=UserFilter(username=username))
+        )
+        return user
+
+    async def add_new_users(self, users: Iterable[SUserInDB]) -> list[MUser]:
+        return await self.add_many(users)
+
+    async def add_permission_to_user(self, username: str, permission: SPermissionIn):
+
+        user: MUser | None = await self.find_one_or_none(
+            filters=UserFilter(username=username)
+        )
+        if not user:
+            logger.error(f"Пользователь с именем {username} не найден.")
+            raise ValueError(f"Пользователь с именем {username} не найден.")
+
+        permission_dao = PermissionDAO(self._session)
+        perm: MPermission | None = await permission_dao.find_one_or_none(
+            filters=SPermissionIn(name=permission.name)
+        )
+        if not perm:
+            logger.error(f"Разрешение {permission.name} не найдено.")
+            return user
+
+        if perm in user.permissions:
+            logger.warning(
+                f"Пользователь {username} уже имеет разрешение {permission.name}."
+            )
+            return user
+
+        user.permissions.append(perm)
+        await self._session.flush()
+        return user
+
+    async def add_permissions_to_user(
+        self, username: str, permissions: Iterable[SPermissionIn]
+    ):
+
+        user: MUser | None = await self.find_one_or_none(
+            filters=UserFilter(username=username)
+        )
+        if not user:
+            logger.error(f"Пользователь с именем {username} не найден.")
+            raise ValueError(f"Пользователь с именем {username} не найден.")
+
+        permission_dao = PermissionDAO(self._session)
+        for permission in permissions:
+            perm: MPermission | None = await permission_dao.find_one_or_none(
+                filters=SPermissionIn(name=permission.name)
+            )
+            if not perm:
+                logger.error(f"Разрешение {permission} не найдено.")
+                continue
+            if perm in user.permissions:
+                logger.warning(
+                    f"Пользователь {username} уже имеет разрешение {permission}."
+                )
+                continue
+            user.permissions.append(perm)
+            await self._session.flush()
+        return user
 
 
 async def get_user_by_name(username: str) -> SUserOut | None:

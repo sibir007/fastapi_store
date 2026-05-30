@@ -4,12 +4,17 @@ from sqlalchemy.future import select
 
 
 from project.schemas_products import SProductSummaryOutAdmin, SProductSummaryOutByer
-from project.database.dao import MProduct
-from project.database.dao_util import clear_table  # type: ignore
+from project.database.dao import BaseDAO
+from project.database.models import MNomenclature
+from project.database.models import MProduct
+from project.database.dao import clear_table
 from project.database.models import Decimal, MNomenclature, func
 from project.database.session import async_session
 from project.schemas_products import SNomenclatureIn, SNomenclatureOut, SProductIn, SProsuctDbOut, SProsuctDbOutFull
 
+
+class ProductDAO(BaseDAO[MProduct]):
+    model = MProduct
 
 async def clear_nomenclature_table() -> None:
     await clear_table(MNomenclature)
@@ -176,3 +181,4 @@ async def get_products_summary_for_byer(ids: list[int] | None = None) -> list[SP
         for summ_admin_m in res_summ
     ]
     return res_summ_byer
+

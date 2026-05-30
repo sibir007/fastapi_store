@@ -13,10 +13,12 @@ import typer
 
 import asyncio
 
+from project.database.dao import BaseDAO
+from project.database.models import MNomenclature
 from project.schemas_products import (
     SNomenclatureOut,
 )
-from project.database.dao_products_util import (
+from project.database.dao_products import (
     add_nomenclatures,
     add_products,
     clear_nomenclature_table,
@@ -278,3 +280,7 @@ def add_average_price(nomenclature_out_db: Iterable[SNomenclatureOut]):
     ]
 
     return nomenclature_out_db_av
+
+
+class NomenclatureDAO(BaseDAO[MNomenclature]):
+    model = MNomenclature

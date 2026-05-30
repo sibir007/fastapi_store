@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from fastapi.responses import PlainTextResponse
-from apscheduler import SchedulerRole
 
 
 from project.scheduler import async_scheduler # type: ignore

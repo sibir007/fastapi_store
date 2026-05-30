@@ -20,11 +20,14 @@ ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=settings.AUTH_API_URL,
-    scopes={"me": "Read information about the current user.",
-            "items": "Read items.",
-            "admin_permissions": "Insert administrator permissions into the token if the user has them"},
+    scopes={
+        "me": "Read information about the current user.",
+        "items": "Read items.",
+        "cart": "Create, read, update cart.",
+        "orders": "Create, read orders.",
+        "admin_permissions": "Insert administrator permissions into the token if the user has them",
+    },
 )
-
 
 
 password_hash = PasswordHash.recommended()
@@ -36,7 +39,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
-
 
 
 def create_access_token(
@@ -72,22 +74,22 @@ def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
     return token_data
 
 
-# to get a string like this run:
-# openssl rand -hex 32
-
-
 async def verifiy_and_get_token_data(
     security_scopes: SecurityScopes, token: Annotated[str, Depends(oauth2_scheme)]
 ) -> TokenData:
 
-    token_data: TokenData = verifi_token(token, secret_key=SECRET_KEY, algorithm=ALGORITHM)
+    token_data: TokenData = verifi_token(
+        token, secret_key=SECRET_KEY, algorithm=ALGORITHM
+    )
     for scope in security_scopes.scopes:
         if scope not in token_data.scopes:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Not enough permissions",
-                headers={"WWW-Authenticate": f'Bearer scope="{security_scopes.scope_str}"'},
-                )
+                headers={
+                    "WWW-Authenticate": f'Bearer scope="{security_scopes.scope_str}"'
+                },
+            )
     return token_data
 
 
@@ -95,6 +97,5 @@ async def get_token_username(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
 ) -> str:
     return token_data.username
-
 
 

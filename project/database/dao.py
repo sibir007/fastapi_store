@@ -1,10 +1,11 @@
-from typing import Any, Iterable, TypeVar, Generic, Type, cast
+from typing import Any, Iterable, TypeVar, Generic, Type
 
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.future import select
 from sqlalchemy import (
     CursorResult,
+    delete,
     update as sqlalchemy_update,
     delete as sqlalchemy_delete,
     func,
@@ -14,9 +15,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # from sqlalchemy.orm import selectinload
 
-from project.schemas_auth import SPermissionIn, UserFilter, SUserInDB
-from project.database.models import MBase, MNomenclature, MPermission, MProduct, MUser
+from project.database.models import MBase
 import logging
+
+from project.database.session import async_session, engine
 
 logger = logging.getLogger(__name__)
 
@@ -185,89 +187,23 @@ class BaseDAO(Generic[T]):
             raise
 
 
-class UserDAO(BaseDAO[MUser]):
-    model = MUser
-
-    async def get_user_by_name(self, username: str) -> MUser | None:
-
-        user: MUser | None = cast(
-            MUser, await self.find_one_or_none(filters=UserFilter(username=username))
-        )
-        return user
-
-    async def add_new_users(self, users: Iterable[SUserInDB]) -> list[MUser]:
-        return await self.add_many(users)
-
-    async def add_permission_to_user(self, username: str, permission: SPermissionIn):
-
-        user: MUser | None = await self.find_one_or_none(
-            filters=UserFilter(username=username)
-        )
-        if not user:
-            logger.error(f"Пользователь с именем {username} не найден.")
-            raise ValueError(f"Пользователь с именем {username} не найден.")
-
-        permission_dao = PermissionDAO(self._session)
-        perm: MPermission | None = await permission_dao.find_one_or_none(
-            filters=SPermissionIn(name=permission.name)
-        )
-        if not perm:
-            logger.error(f"Разрешение {permission.name} не найдено.")
-            return user
-
-        if perm in user.permissions:
-            logger.warning(
-                f"Пользователь {username} уже имеет разрешение {permission.name}."
-            )
-            return user
-
-        user.permissions.append(perm)
-        await self._session.flush()
-        return user
-
-    async def add_permissions_to_user(
-        self, username: str, permissions: Iterable[SPermissionIn]
-    ):
-
-        user: MUser | None = await self.find_one_or_none(
-            filters=UserFilter(username=username)
-        )
-        if not user:
-            logger.error(f"Пользователь с именем {username} не найден.")
-            raise ValueError(f"Пользователь с именем {username} не найден.")
-
-        permission_dao = PermissionDAO(self._session)
-        for permission in permissions:
-            perm: MPermission | None = await permission_dao.find_one_or_none(
-                filters=SPermissionIn(name=permission.name)
-            )
-            if not perm:
-                logger.error(f"Разрешение {permission} не найдено.")
-                continue
-            if perm in user.permissions:
-                logger.warning(
-                    f"Пользователь {username} уже имеет разрешение {permission}."
-                )
-                continue
-            user.permissions.append(perm)
-            await self._session.flush()
-        return user
+async def init_db():
+    """
+    Drop and create db
+    """
+    async with engine.begin() as connection:
+        await connection.run_sync(MBase.metadata.drop_all)
+        await connection.run_sync(MBase.metadata.create_all)
 
 
-class PermissionDAO(BaseDAO[MPermission]):  # type: ignore
-    model = MPermission
+async def clear_table(table_type: type[MBase]) -> None:
+    """clear table"""
 
-    async def add_permissions(
-        self, permissions: Iterable[SPermissionIn]
-    ) -> list[MPermission]:
-        return await self.add_many(permissions)
-
-    async def add_permission(self, permission: SPermissionIn) -> MPermission:
-        return await self.add(permission)
+    async with async_session() as session:
+        statement = delete(table_type)
+        await session.execute(statement)
+        await session.commit()
 
 
-class ProductDAO(BaseDAO[MProduct]):
-    model = MProduct
 
-class NomenclatureDAO(BaseDAO[MNomenclature]):
-    model = MNomenclature
+

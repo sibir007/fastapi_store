@@ -1,57 +1,91 @@
-
 from fastapi import status
 from faststream import Logger
 from pydantic import BaseModel
 
-from project.database.dao_products_util import get_nomenclatures, get_products_summary_for_byer
+from project.database.dao_products import (
+    get_nomenclatures,
+    get_products_summary_for_byer,
+)
 from project.schemas import SBool
-from project.schemas_broker import SBrokerExeption, SProductsSummaryOutByerBrokerResoult, SVerifyReqversBrokerResult
+from project.schemas_broker import (
+    SServiceExeption,
+    SProductsSummaryOutByerServiceResoult,
+    SVerifyReqversServiceResult,
+)
+from project.schemas_cart import SCart
 from project.schemas_products import SNomId, SProductSummaryOutByer
 
 from project.service import service
 from project.broker import broker
+
 # from project.broker_router import broker, broker_router
 
 
 @broker.subscriber(list="products")
-async def get_products_handler(_: BaseModel, logger: Logger) -> SProductsSummaryOutByerBrokerResoult:
+async def get_products_handler(
+    _: BaseModel, logger: Logger
+) -> SProductsSummaryOutByerServiceResoult:
     logger.info(f"get products handler: accept")
     try:
         products: list[SProductSummaryOutByer] = await get_products_summary_for_byer()
     except Exception as e:
-        return SProductsSummaryOutByerBrokerResoult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in get_products_handler: {e}")
+        return SProductsSummaryOutByerServiceResoult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
 
-    return SProductsSummaryOutByerBrokerResoult(resoult=products)
+    return SProductsSummaryOutByerServiceResoult(resoult=products)
+
+
+
+@broker.subscriber(list="products-for-order")
+async def get_products_for_order_handler(
+    products: SCart, logger: Logger
+) -> SProductsSummaryOutByerServiceResoult:
+    logger.info(f"get products for order handler: accept")
+    try:
+        products_for_byer: list[SProductSummaryOutByer] = (
+            await get_products_summary_for_byer(
+                [product.nom_id for product in products.items]
+            )
+        )
+
+    except Exception as e:
+        logger.error(f"error in get_products_for_order_handler: {e}")
+        return SProductsSummaryOutByerServiceResoult(
+            exeption=SServiceExeption(
+                code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+            )
+        )
+    
+    
+    return SProductsSummaryOutByerServiceResoult(resoult=products_for_byer)
+
 
 # "verify-product"
 
 # SNomId(nom_id=nom_id),
 #         "verify-product",
 #         ,
-        
+
 
 @broker.subscriber(list="verify-product")
-async def verify_product_handler(nom_id: SNomId, logger: Logger) -> SVerifyReqversBrokerResult:
+async def verify_product_handler(
+    nom_id: SNomId, logger: Logger
+) -> SVerifyReqversServiceResult:
     logger.info(f"verify product handler: nom_id {nom_id}")
     try:
         noms = await get_nomenclatures([nom_id.nom_id])
     except Exception as e:
-        return SVerifyReqversBrokerResult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in verify_product_handler: {e}")
+        return SVerifyReqversServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
-    return SVerifyReqversBrokerResult(resoult=SBool(result=bool(noms)))
-
-
-
-
-
-
+    return SVerifyReqversServiceResult(resoult=SBool(result=bool(noms)))
 
 
 # @broker.subscriber(list="user")

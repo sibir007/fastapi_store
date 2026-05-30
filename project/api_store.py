@@ -1,21 +1,19 @@
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, Security
+from fastapi import Depends, Security
 from faststream.redis import RedisBroker
 from pydantic import BaseModel
-from project.broker import get_broker_resoult_or_raise_http_exaption
-from project.broker_router import broker
+from project.lib_services import get_service_resoult_or_raise_http_exaption
 from project.broker_router import broker, broker_router
 from project.lib_auth import get_token_username
 
-from fastapi.middleware.cors import CORSMiddleware
 
-from project.database.dao_products_util import (
+from project.database.dao_products import (
     get_products_summary_for_admin,
     add_nomenclatures as add_nomenclatures_util,
     add_products as add_products_util,
 )
-from project.schemas_broker import SProductsSummaryOutByerBrokerResoult
+from project.schemas_broker import SProductsSummaryOutByerServiceResoult
 from project.schemas_products import (
     SNomenclatureIn,
     SNomenclatureOut,
@@ -24,8 +22,8 @@ from project.schemas_products import (
     SProductSummaryOutByer,
     SProsuctDbOutFull,
 )
-
-app = FastAPI()
+from project.api import app
+# app = FastAPI()
 
 class SEmpty(BaseModel):
     pass
@@ -36,8 +34,8 @@ class SEmpty(BaseModel):
 async def get_products(
     broker: Annotated[RedisBroker, Depends(broker)],
 ) -> list[SProductSummaryOutByer]:
-    return await get_broker_resoult_or_raise_http_exaption(
-        broker, SEmpty(), "products", SProductsSummaryOutByerBrokerResoult
+    return await get_service_resoult_or_raise_http_exaption(
+        broker, SEmpty(), "products", SProductsSummaryOutByerServiceResoult
     )
 
 
@@ -66,14 +64,5 @@ async def add_nomenclatures(
     nomenclatures: list[SNomenclatureIn],
 ) -> list[SNomenclatureOut]:
     return await add_nomenclatures_util(nomenclatures)
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.include_router(broker_router)

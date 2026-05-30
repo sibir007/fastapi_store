@@ -1,118 +1,125 @@
 from fastapi import status
 
 from faststream import Logger
-from project.schemas import SBool
-from project.schemas_broker import SBrokerExeption, STopupBrokerResult, SUserBrokerResult, SVerifyReqversBrokerResult
+   
+from project.schemas import SBool,  SUsername
+from project.schemas_broker import SServiceExeption, STopupServiceResult, SUserServiceResult, SVerifyReqversServiceResult
 from project.lib_auth import get_password_hash, verify_password
-from project.database.dao_users_util import create_user, get_user_by_name, get_user_by_name_with_pass_hash, topup_none_if_user_not_found
+from project.database.dao_users import create_user, get_user_by_name, get_user_by_name_with_pass_hash, topup_none_if_user_not_found
 from project.schemas_auth import (
     AuthUserData,
     STopup,
     SUserIn,
     SUserInDB,
-    SUserName,
     SUserOut,
 )
 from project.broker import broker
 from project.service import service
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @broker.subscriber(list="auth")
-async def auth_handler(auth_data: AuthUserData, logger: Logger) -> SUserBrokerResult:
+async def auth_handler(auth_data: AuthUserData, logger: Logger) -> SUserServiceResult:
     logger.info(f"auth message: {auth_data}")
     try:
         user, pass_hash = await get_user_by_name_with_pass_hash(auth_data.username)
     except Exception as e:
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in auth_handler: {e}")
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
     if user is None: 
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_401_UNAUTHORIZED,
                 detailes="Incorrect username or password",
             )
         )
     if user.disabled:
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_401_UNAUTHORIZED, detailes="User desabled"
             )
         )
     if not verify_password(auth_data.password, pass_hash): # type: ignore
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_401_UNAUTHORIZED,
                 detailes="Incorrect username or password",
             )
         )
 
-    return SUserBrokerResult(resoult=user)
+    return SUserServiceResult(resoult=user)
 
 
 @broker.subscriber(list="user")
-async def get_user_handler(username: SUserName, logger: Logger) -> SUserBrokerResult:
+async def get_user_handler(username: SUsername, logger: Logger) -> SUserServiceResult:
 
     logger.info(f"get user handler message: username {username}")
     try:
         user = await get_user_by_name(username.username)
     except Exception as e:
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in get_user_handler: {e}")
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
     if user is None:
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_404_NOT_FOUND, detailes="User not found"
             )
         )
 
-    return SUserBrokerResult(resoult=user)
+    return SUserServiceResult(resoult=user)
 
 @broker.subscriber(list="verify-user")
-async def verify_user_handler(username: SUserName, logger: Logger) -> SVerifyReqversBrokerResult:
+async def verify_user_handler(username: SUsername, logger: Logger) -> SVerifyReqversServiceResult:
 
     logger.info(f"verify user handler message: username {username}")
     try:
         user = await get_user_by_name(username.username)
     except Exception as e:
-        return SVerifyReqversBrokerResult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in verify_user_handler: {e}")
+        return SVerifyReqversServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
     if user is None:
-        return SVerifyReqversBrokerResult(resoult=SBool(result=False))
+        return SVerifyReqversServiceResult(resoult=SBool(result=False))
         
-    return SVerifyReqversBrokerResult(resoult=SBool(result=True))
+    return SVerifyReqversServiceResult(resoult=SBool(result=True))
 
 
 
 @broker.subscriber(list="topup")
-async def topup_handler(topup: STopup, logger: Logger) -> STopupBrokerResult:
+async def topup_handler(topup: STopup, logger: Logger) -> STopupServiceResult:
 
     logger.info(f"topup handler message: username {topup.username}, ammount {topup.ammount}")
     try:
         topup_out = await topup_none_if_user_not_found(topup)
     except Exception as e:
-        return STopupBrokerResult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in topup_handler: {e}")
+        return STopupServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
     if topup_out is None:
-        return STopupBrokerResult(
-            exeption=SBrokerExeption(
+        return STopupServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_404_NOT_FOUND, detailes="User not found"
             )
         )
 
-    return STopupBrokerResult(resoult=topup_out)
+    return STopupServiceResult(resoult=topup_out)
 
 
 # @broker.subscriber(list="register")
@@ -150,7 +157,7 @@ async def topup_handler(topup: STopup, logger: Logger) -> STopupBrokerResult:
 
 
 @broker.subscriber(list="register")
-async def user_register_handler(user_reg: SUserIn, logger: Logger) -> SUserBrokerResult:
+async def user_register_handler(user_reg: SUserIn, logger: Logger) -> SUserServiceResult:
     user_dict = user_reg.model_dump()
     user_db = SUserInDB(
         hashed_password=get_password_hash(user_dict.get("password", "")), **user_dict
@@ -158,8 +165,8 @@ async def user_register_handler(user_reg: SUserIn, logger: Logger) -> SUserBroke
     try:
         user_out: SUserOut | None = await create_user(user_db)
         if user_out is None:
-            return SUserBrokerResult(
-                exeption=SBrokerExeption(
+            return SUserServiceResult(
+                exeption=SServiceExeption(
                     code=status.HTTP_409_CONFLICT,
                     detailes="User with the given name or email already exists",
                 )
@@ -167,12 +174,13 @@ async def user_register_handler(user_reg: SUserIn, logger: Logger) -> SUserBroke
 
         logger.info(f"user_out: {user_out}")
     except Exception as e:
-        return SUserBrokerResult(
-            exeption=SBrokerExeption(
+        logger.error(f"error in user_register_handler: {e}")
+        return SUserServiceResult(
+            exeption=SServiceExeption(
                 code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
             )
         )
-    return SUserBrokerResult(resoult=user_out)
+    return SUserServiceResult(resoult=user_out)
 
 
 @broker.subscriber(list="test")

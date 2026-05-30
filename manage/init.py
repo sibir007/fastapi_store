@@ -3,8 +3,8 @@ import typer
 
 import asyncio
 
-from project.database.dao_users_util import clear_and_resave_permissions
-from project.database.dao_util import init_db as async_init_db
+from project.database.dao_users import clear_and_resave_permissions
+from project.database.dao import init_db as async_init_db
 from manage.users import app
 
 app = typer.Typer()

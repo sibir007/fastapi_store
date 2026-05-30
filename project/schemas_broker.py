@@ -1,45 +1,51 @@
 from pydantic import BaseModel
 
 from project.schemas import SBool
-from project.schemas_auth import STopupOut
-from project.schemas_auth import SUserOut
+from project.schemas_auth import SUserOut, STopupOut
 from project.schemas_cart import SCartItem, SCart
+from project.schemas_orders import SOrderOut
 from project.schemas_products import SProductSummaryOutByer
 
 
-class SBrokerExeption(BaseModel):
+class SServiceExeption(BaseModel):
     code: int
     detailes: str
 
 
-class SBorkerResoultBase[T](BaseModel):
+class SServiceResoultBase[T](BaseModel):
     resoult: T | None = None
-    exeption: SBrokerExeption | None = None
+    exeption: SServiceExeption | None = None
 
 
-class SUserBrokerResult(SBorkerResoultBase[SUserOut]):
+class SUserServiceResult(SServiceResoultBase[SUserOut]):
     pass
 
 
 # type SVerifyReqversBrokerResult = SBorkerResoultBase[SBool] 
 
-class SVerifyReqversBrokerResult(SBorkerResoultBase[SBool]):
+class SVerifyReqversServiceResult(SServiceResoultBase[SBool]):
     pass
 
 
-class STopupBrokerResult(SBorkerResoultBase[STopupOut]):
+class STopupServiceResult(SServiceResoultBase[STopupOut]):
     pass
 
 
-class SCartBrokerResult(SBorkerResoultBase[SCart]):
+class SCartServiceResult(SServiceResoultBase[SCart]):
     pass
 
 
-class SCatrItemBrokerResoult(SBorkerResoultBase[SCartItem]):
+class SCatrItemServiceResoult(SServiceResoultBase[SCartItem]):
     pass
 
 
-class SProductsSummaryOutByerBrokerResoult(
-    SBorkerResoultBase[list[SProductSummaryOutByer]]
+class SProductsSummaryOutByerServiceResoult(
+    SServiceResoultBase[list[SProductSummaryOutByer]]
 ):
+    pass
+
+class SOrdersServiceResult(SServiceResoultBase[list[SOrderOut]]):
+    pass 
+
+class SOrderServiceResult(SServiceResoultBase[SOrderOut]):
     pass

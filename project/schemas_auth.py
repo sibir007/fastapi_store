@@ -1,11 +1,10 @@
 from decimal import Decimal
 from typing import Annotated
-
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, PlainSerializer
 
 
-class SUserName(BaseModel):
-    username: str
+# class SUsername(BaseModel):
+#     username: str
 
 
 class Token(BaseModel):

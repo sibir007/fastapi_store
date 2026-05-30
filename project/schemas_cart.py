@@ -24,6 +24,6 @@ class SCartItemDbOut(BaseModel):
 class SCart(BaseModel):
     items: list[SCartItem]
 
-
-class SCartReq(BaseModel):
+class SUserCart(SCart):
     username: str
+

@@ -104,6 +104,29 @@ services:
       db:
         condition: service_healthy
 
+  service_orders:
+    container_name: service_orders
+    build: .
+    command: faststream run project.service_orders:service
+    env_file: ".env"
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+
+    depends_on:
+      broker:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      # - service_scheduler
+
+
+
   service_scheduler:
     container_name: service_scheduler
     build: .
@@ -206,6 +229,23 @@ services:
           path: requirements.txt
     depends_on:
       - service_cart
+
+  api_orders:
+    container_name: api_orders
+    build: .
+    command: uvicorn project.api_orders:app --host 0.0.0.0 --port "${ORDERS_API_PORT}"
+    env_file: ".env"
+
+    network_mode: host
+    develop:
+      watch:
+        - action: sync+restart
+          path: project
+          target: /app/project
+        - action: rebuild
+          path: requirements.txt
+    depends_on:
+      - service_orders
       # worker:
       #   container_name: worker
       #   build: ./project

@@ -8,14 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from project.scheduler_calable import tick
 from project.scheduler import async_scheduler
-from apscheduler import SchedulerRole
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
 from datetime import timedelta, datetime
-
-# async_scheduler.role = SchedulerRole.scheduler
-
 
 
 @asynccontextmanager
@@ -147,3 +143,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# app.include_router(broker_router)
