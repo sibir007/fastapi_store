@@ -14,17 +14,17 @@ import typer
 import asyncio
 
 from project.database.dao import BaseDAO
-from project.database.models import MNomenclature
-from project.schemas_products import (
+from project.database.models_store import MNomenclature
+from project.schemas_store import (
     SNomenclatureOut,
 )
-from project.database.dao_products import (
+from project.database.dao_store import (
     add_nomenclatures,
     add_products,
     clear_nomenclature_table,
     get_nomenclatures,
 )
-from project.schemas_products import SNomenclatureIn, SProductIn, SProsuctDbOutFull
+from project.schemas_store import SNomenclatureIn, SProductIn, SProsuctDbOutFull
 from manage.utils import save_list_to_json_file
 
 PRODUCTS_FILE = "manage/products.json"

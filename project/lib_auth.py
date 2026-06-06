@@ -25,6 +25,7 @@ oauth2_scheme = OAuth2PasswordBearer(
         "items": "Read items.",
         "cart": "Create, read, update cart.",
         "orders": "Create, read orders.",
+        "payment": "Create payment for order.",
         "admin_permissions": "Insert administrator permissions into the token if the user has them",
     },
 )

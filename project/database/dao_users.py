@@ -8,11 +8,14 @@ from project.database.dao import (
     logger,
 )
 from project.database.dao import clear_table
-from project.database.models import MUser, MPermission, Permission
+from project.database.models_auth import MPayment, MPermission
+from project.database.models_auth import MUser, Permission
 from project.database.session import async_session
 
 
 from project.schemas_auth import (
+    SPaymentInDB,
+    SPaymentOut,
     SPermissionIn,
     SPermissionOut,
     STopup,
@@ -236,3 +239,33 @@ async def get_users_without_permissions() -> list[SUserWithoutPermission]:
 
 async def get_users_names() -> list[str]:
     return [n.username for n in await get_users_without_permissions()]
+
+
+async def applay_payment(payment: SPaymentInDB) -> SPaymentOut:
+    async with async_session() as session:
+        stm = (
+            select(MUser)
+            .where(MUser.username == payment.username)
+        )
+        result = await session.execute(stm)
+        user_m = result.scalar_one()
+        if user_m.balance < payment.ammount:
+            raise ValueError(
+                f"Not enough funds on {payment.username}'s balance. Current balance: {user_m.balance}, required: {payment.ammount}"
+            )
+        user_m.balance -= payment.ammount
+        payment_in = MPayment(
+                username=payment.username,
+                order_id=payment.order_id,
+                sale_id=payment.sale_id,
+                ammount=payment.ammount,
+            ) 
+        session.add(
+            payment_in
+        )
+        await session.flush()
+        payment_out = SPaymentOut.model_validate(payment_in)
+        await session.commit()
+    return payment_out
+        # user_m = user_m.scalar_one()
+

@@ -1,4 +1,4 @@
-from project.database.models import MBase
+from project.database.models_base import MBase
 
 print(MBase.__class__)
 

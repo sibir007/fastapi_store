@@ -1,5 +1,5 @@
-from project.database.models import MOrder, MOrderItem
 from project.database.dao import BaseDAO
+from project.database.models_order import MOrder, MOrderItem
 from project.database.session import async_session
 from project.schemas import OrderStatus
 from project.schemas_orders import SOrderIn, SOrderOut
@@ -108,24 +108,27 @@ async def get_all_paid_orders(username: str) -> list[SOrderOut]:
     return await get_orders_by_status(username, [OrderStatus.PAID])
 
 
-async def _set_order_status(status: OrderStatus, order_id: int) -> SOrderOut | None:
+async def _set_order_status(set_status: OrderStatus, order_id: int, initial_order_state: OrderStatus) -> SOrderOut | None:
     async with async_session() as session:
         order_m = await session.get(MOrder, order_id)
+            
         if order_m is None:
             return order_m
-        order_m.status = status
+        if order_m.status != initial_order_state:
+            raise ValueError(f"Error order status: {order_m.status}, expected status: {initial_order_state}")
+        order_m.status = set_status
         await session.commit()
         order_out = SOrderOut.model_validate(order_m)
     return order_out
 
 
 async def set_canceled_order_status(order_id: int):
-    return await _set_order_status(OrderStatus.CANCELED, order_id)
+    return await _set_order_status(OrderStatus.CANCELED, order_id, OrderStatus.WAITING)
 
 
 async def set_paid_order_status(order_id: int):
-    return await _set_order_status(OrderStatus.PAID, order_id)
+    return await _set_order_status(OrderStatus.PAID, order_id, OrderStatus.WAITING)
 
 
 async def set_completed_order_status(order_id: int):
-    return await _set_order_status(OrderStatus.COMPLETED, order_id)
+    return await _set_order_status(OrderStatus.COMPLETED, order_id, OrderStatus.PAID)

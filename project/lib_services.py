@@ -1,6 +1,8 @@
 from project.schemas import SUsername
 from project.exceptions import HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION, raise_exaption
 from project.schemas_broker import (
+    SOrderServiceResult,
+    SSaleInStoreServiceResult,
     SServiceResoultBase,
     SServiceExeption,
     SCartServiceResult,
@@ -18,8 +20,11 @@ from pydantic import BaseModel
 from typing import Any
 
 from project.schemas_cart import SCart, SUserCart
-from project.schemas_products import SNomId
+from project.schemas_orders import SOrderOut
+from project.schemas_store import SNomId, SSaleIn
 import logging
+
+from project.schemas_orders import SOrderId
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +81,7 @@ async def get_service_resoult[T](
     return res
 
 
-async def  get_service_resoult_or_raise_http_exaption[T](
+async def get_service_resoult_or_raise_http_exaption[T](
     broker: RedisBroker,
     req: BaseModel,
     queue_name: str,
@@ -91,22 +96,30 @@ async def  get_service_resoult_or_raise_http_exaption[T](
         # logger.error(f"broker res: {broker_resoult}, class {broker_result_class}")
     except Exception as e:
         # raise e
-        logger.error(f"exeptionon in get_service_resoult_or_raise_http_exaption: {e.__str__()}")
+        logger.error(
+            f"exeptionon in get_service_resoult_or_raise_http_exaption: {e.__str__()}"
+        )
         raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(detail=e.__str__())
 
     if broker_resoult is None:
-        logger.error(f"exeptionon in get_service_resoult_or_raise_http_exaption res None")
+        logger.error(
+            f"exeptionon in get_service_resoult_or_raise_http_exaption res None"
+        )
         raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(detail="broker_sesoult None")
     broker_resoult_obj = broker_result_class(**broker_resoult)
     if broker_resoult_obj.exeption:
-        logger.error(f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.exeption ditails: {broker_resoult_obj.exeption.detailes}")
+        logger.error(
+            f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.exeption ditails: {broker_resoult_obj.exeption.detailes}"
+        )
         raise_exaption(
             broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes
         )
 
     res = broker_resoult_obj.resoult
     if res is None:  # should not happen, but just in case
-        logger.error(f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.resoult None")
+        logger.error(
+            f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.resoult None"
+        )
         raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
             "Internal server error during user retrieval, incompatible service state"
         )
@@ -144,7 +157,6 @@ async def verify_user_service_request(
     return broker_resoult
 
 
-
 async def clear_cart_service_request(
     cart: SUserCart, broker: RedisBroker, logger: Logger
 ) -> SVerifyReqversServiceResult:
@@ -173,6 +185,33 @@ async def restore_cart_service_request(
     return broker_resoult
 
 
+async def get_order_service_request(
+    order_id: SOrderId, broker: RedisBroker, logger: Logger
+) -> SOrderServiceResult:
+    broker_resoult: SOrderServiceResult = await get_service_resoult(
+        broker,
+        order_id,
+        "get-order",
+        SOrderServiceResult,
+        logger,
+    )
+
+    return broker_resoult
+
+
+async def set_order_state_paid_service_request(
+    order_id: SOrderId, broker: RedisBroker, logger: Logger
+) -> SOrderServiceResult:
+    broker_resoult: SOrderServiceResult = await get_service_resoult(
+        broker,
+        order_id,
+        "set-order-state-paid",
+        SOrderServiceResult,
+        logger,
+    )
+
+    return broker_resoult
+
 
 async def get_cart_service_request(
     username: SUsername, broker: RedisBroker, logger: Logger
@@ -190,12 +229,25 @@ async def get_cart_service_request(
 
 async def get_products_for_order_service_request(
     cart: SCart, broker: RedisBroker, logger: Logger
-):
+) -> SProductsSummaryOutByerServiceResoult:
     broker_resoult: SProductsSummaryOutByerServiceResoult = await get_service_resoult(
         broker,
         cart,
         "products-for-order",
         SProductsSummaryOutByerServiceResoult,
+        logger,
+    )
+    return broker_resoult
+
+
+async def sale_in_store_service_request(
+    order: SOrderOut, broker: RedisBroker, logger: Logger
+) -> SSaleInStoreServiceResult:
+    broker_resoult: SSaleInStoreServiceResult = await get_service_resoult(
+        broker,
+        SSaleIn(order_id=order.id, items=order.items),
+        "sale-in-store",
+        SSaleInStoreServiceResult,
         logger,
     )
     return broker_resoult

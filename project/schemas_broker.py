@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 
 from project.schemas import SBool
-from project.schemas_auth import SUserOut, STopupOut
+from project.schemas_auth import SPaymentOut, SUserOut, STopupOut
 from project.schemas_cart import SCartItem, SCart
 from project.schemas_orders import SOrderOut
-from project.schemas_products import SProductSummaryOutByer
+from project.schemas_store import SProductSummaryOutByer, SSaleOut
 
 
 class SServiceExeption(BaseModel):
@@ -21,7 +21,8 @@ class SUserServiceResult(SServiceResoultBase[SUserOut]):
     pass
 
 
-# type SVerifyReqversBrokerResult = SBorkerResoultBase[SBool] 
+# type SVerifyReqversBrokerResult = SBorkerResoultBase[SBool]
+
 
 class SVerifyReqversServiceResult(SServiceResoultBase[SBool]):
     pass
@@ -44,8 +45,18 @@ class SProductsSummaryOutByerServiceResoult(
 ):
     pass
 
+
 class SOrdersServiceResult(SServiceResoultBase[list[SOrderOut]]):
-    pass 
+    pass
+
 
 class SOrderServiceResult(SServiceResoultBase[SOrderOut]):
+    pass
+
+
+class SPaymentServiceResult(SServiceResoultBase[SPaymentOut]):
+    pass
+
+
+class SSaleInStoreServiceResult(SServiceResoultBase[SSaleOut]):
     pass

@@ -12,6 +12,8 @@ from project.lib_services import get_service_resoult_or_raise_http_exaption
 from project.broker_router import broker, broker_router
 from project.schemas import SUsername
 from project.schemas_auth import (
+    SPaymentIn,
+    SPaymentOut,
     STopup,
     STopupIn,
     STopupOut,
@@ -29,7 +31,7 @@ from project.lib_auth import (
     get_token_username,
     verifiy_and_get_token_data,
 )
-from project.schemas_broker import STopupServiceResult, SUserServiceResult
+from project.schemas_broker import SPaymentServiceResult, STopupServiceResult, SUserServiceResult
 from project.api import app
 
 # app = FastAPI()
@@ -39,7 +41,9 @@ async def get_current_user(
     token_data: Annotated[TokenData, Depends(verifiy_and_get_token_data)],
     broker: Annotated[RedisBroker, Depends(broker)],
 ) -> SUserOut:
-    res_out: SUserOut = await get_service_resoult_or_raise_http_exaption(broker, SUsername(username=token_data.username), "user",  SUserServiceResult)
+    res_out: SUserOut = await get_service_resoult_or_raise_http_exaption(
+        broker, SUsername(username=token_data.username), "user", SUserServiceResult
+    )
     return res_out
 
 
@@ -50,11 +54,11 @@ async def login_for_access_token(
 ) -> Token:
 
     user: SUserOut = await get_service_resoult_or_raise_http_exaption(
-        broker, 
+        broker,
         AuthUserData(username=form_data.username, password=form_data.password),
         "auth",
-        SUserServiceResult
-        )
+        SUserServiceResult,
+    )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     if "admin_permissions" in form_data.scopes:
@@ -80,11 +84,8 @@ async def register_user(
     user_data: SUserIn, broker: Annotated[RedisBroker, Depends(broker)]
 ) -> SUserOut:
     user: SUserOut = await get_service_resoult_or_raise_http_exaption(
-        broker,
-        user_data,
-        "register",
-        SUserServiceResult
-        )
+        broker, user_data, "register", SUserServiceResult
+    )
 
     return user
 
@@ -102,21 +103,41 @@ async def read_users_me(
 ) -> SUserOut:
     return current_user
 
+
+
 @broker_router.post("/api/auth/topup/")
 async def balance_topup(
     topup: STopupIn,
     username: Annotated[str, Depends(get_token_username)],
     broker: Annotated[RedisBroker, Depends(broker)],
 ) -> STopupOut:
-    
+
     topup_out: STopupOut = await get_service_resoult_or_raise_http_exaption(
         broker,
         STopup(ammount=topup.ammount, username=username),
         "topup",
-        STopupServiceResult
-        )
-    
+        STopupServiceResult,
+    )
 
     return topup_out
+
+
+@broker_router.post("/api/auth/payment/")
+async def payment(
+    order_id: int,
+    username: Annotated[str, Security(get_token_username, scopes=["payment"])],
+    broker: Annotated[RedisBroker, Depends(broker)],
+) -> SPaymentOut:
+
+    payment_out: SPaymentOut = await get_service_resoult_or_raise_http_exaption(
+        broker,
+        SPaymentIn(order_id=order_id, username=username),
+        "payment",
+        SPaymentServiceResult,
+    )
+
+    return payment_out
+
+
 
 app.include_router(broker_router)

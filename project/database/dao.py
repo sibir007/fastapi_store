@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # from sqlalchemy.orm import selectinload
 
-from project.database.models import MBase
+from project.database.models_base import MBase
 import logging
 
 from project.database.session import async_session, engine

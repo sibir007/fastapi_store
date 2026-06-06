@@ -2,18 +2,20 @@ from fastapi import status
 from faststream import Logger
 from pydantic import BaseModel
 
-from project.database.dao_products import (
+from project.database.dao_store import (
+    add_sale,
     get_nomenclatures,
     get_products_summary_for_byer,
 )
 from project.schemas import SBool
 from project.schemas_broker import (
+    SSaleInStoreServiceResult,
     SServiceExeption,
     SProductsSummaryOutByerServiceResoult,
     SVerifyReqversServiceResult,
 )
 from project.schemas_cart import SCart
-from project.schemas_products import SNomId, SProductSummaryOutByer
+from project.schemas_store import SNomId, SProductSummaryOutByer, SSaleIn
 
 from project.service import service
 from project.broker import broker
@@ -86,6 +88,27 @@ async def verify_product_handler(
             )
         )
     return SVerifyReqversServiceResult(resoult=SBool(result=bool(noms)))
+
+
+
+@broker.subscriber(list="sale-in-store")
+async def sale_in_store_handler(
+    sale: SSaleIn, logger: Logger
+) -> SSaleInStoreServiceResult:
+    logger.info(f"sale in store handler: order {sale}")
+    try:
+        sale_out = await add_sale(sale)
+    except Exception as e:
+        logger.error(f"error in sale_in_store_handler: {e}")
+        return SSaleInStoreServiceResult(
+            exeption=SServiceExeption(
+                code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+            )
+        )
+    return SSaleInStoreServiceResult(resoult=sale_out)
+
+
+
 
 
 # @broker.subscriber(list="user")

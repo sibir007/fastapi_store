@@ -5,7 +5,7 @@ from faststream import Logger
 from pydantic import BaseModel
 
 from project.schemas_broker import SOrderServiceResult, SOrdersServiceResult
-from project.database.dao_order import add_order, cancel_order, get_all_orders, get_order
+from project.database.dao_order import add_order, cancel_order, get_all_orders, get_order, set_paid_order_status
 from project.database.dao_order import add_order
 from project.lib_services import (
     clear_cart_service_request,
@@ -18,8 +18,8 @@ from project.schemas_broker import (
     SServiceExeption,
 )
 from project.schemas_cart import SCart, SUserCart
-from project.schemas_orders import SOrderIn, SOrderItem, SOrderOut
-from project.schemas_products import SProductSummaryOutByer
+from project.schemas_orders import SOrderId, SOrderIn, SOrderItem, SOrderOut
+from project.schemas_store import SProductSummaryOutByer
 
 from project.service import service
 from project.broker import broker
@@ -30,7 +30,9 @@ from project.scheduler import async_scheduler
 from apscheduler.triggers.date import DateTrigger
 
 from datetime import timedelta, datetime
+from project.config import settings
 
+ORDER_VALIDITY_SEC = settings.ORDER_VALIDITY_SEC
 
 
 class SCartProductsOrderConvert(BaseModel):
@@ -114,6 +116,13 @@ async def create_order_handler(
                 detailes="cart is None",
             )
         )
+    if not cart.items:
+        return SOrderServiceResult(
+            exeption=SServiceExeption(
+                code=status.HTTP_400_BAD_REQUEST,
+                detailes="cart is empty",
+            )
+        )
 
     # 2. Get products summary for byer
     products_service_resoult = await get_products_for_order_service_request(
@@ -160,7 +169,7 @@ async def create_order_handler(
     async with async_scheduler as scheduler:
         await scheduler.add_schedule(
             set_order_canceled_service_reqvest,
-            DateTrigger(run_time=datetime.now() + timedelta(seconds=20)),
+            DateTrigger(run_time=datetime.now() + timedelta(seconds=ORDER_VALIDITY_SEC)),
             id=f"cancel_order_{order_out.id}",
             args=[order_out.id]
             # kwargs={"task_id": "test_scheduler", "optional_mes": "start up test_scheduler"},
@@ -187,14 +196,46 @@ async def cancel_order_handler(order_id: int, logger: Logger):
         logger.error(f"exeption in cancel_order_handler: {e.__str__()}")
         
 
+@broker.subscriber(list="set-order-state-paid")
+async def set_order_paid_handler(order_id: SOrderId, logger: Logger) -> SOrderServiceResult:
+    logger.info(f"set order paid handler: accept for order id {order_id.id}")
+    try:
+        order_out = await set_paid_order_status(order_id.id)
+
+    
+    except ValueError as e:
+        logger.error(f"Error in set order paid handler: value error {e.__str__()}")
+        return SOrderServiceResult(
+            exeption=SServiceExeption(
+                code=status.HTTP_400_BAD_REQUEST, detailes=e.__str__()
+            )
+        )
+    except Exception as e:
+        logger.error(f"Error in set order paid handler: {e.__str__()}")
+        return SOrderServiceResult(
+            exeption=SServiceExeption(
+                code=status.HTTP_500_INTERNAL_SERVER_ERROR, detailes=e.__str__()
+            )
+        )
+    if order_out is None:
+        logger.error(f"Error in set order paid handler: order_out None")
+        return SOrderServiceResult(
+            exeption=SServiceExeption(
+                code=status.HTTP_404_NOT_FOUND, detailes="Order not found"
+            )
+        )
+
+    return SOrderServiceResult(resoult=order_out)
+
+
 
 
 @broker.subscriber(list="get-order")
-async def get_order_handler(order_id: int, logger: Logger) -> SOrderServiceResult:
+async def get_order_handler(order_id: SOrderId, logger: Logger) -> SOrderServiceResult:
     logger.info(f"get order handler: accept")
 
     try:
-        order_out = await get_order(order_id)
+        order_out = await get_order(order_id.id)
     except Exception as e:
         return SOrderServiceResult(
             exeption=SServiceExeption(

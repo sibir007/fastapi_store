@@ -8,13 +8,13 @@ from project.broker_router import broker, broker_router
 from project.lib_auth import get_token_username
 
 
-from project.database.dao_products import (
+from project.database.dao_store import (
     get_products_summary_for_admin,
     add_nomenclatures as add_nomenclatures_util,
     add_products as add_products_util,
 )
 from project.schemas_broker import SProductsSummaryOutByerServiceResoult
-from project.schemas_products import (
+from project.schemas_store import (
     SNomenclatureIn,
     SNomenclatureOut,
     SProductIn,

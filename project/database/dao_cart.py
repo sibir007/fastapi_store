@@ -13,7 +13,7 @@ from project.schemas_cart import (
     SUserCart,
 )
 from project.database.dao import clear_table
-from project.database.models import MCartItem
+from project.database.models_cart import MCartItem
 from project.database.session import async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging

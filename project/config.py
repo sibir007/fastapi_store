@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    ORDER_VALIDITY_SEC: int
 
     @property
     def REDIS_URL(self) -> str:

@@ -1,7 +1,7 @@
+from datetime import datetime
 from decimal import Decimal
 from typing import Annotated
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, PlainSerializer
-
 
 # class SUsername(BaseModel):
 #     username: str
@@ -94,3 +94,26 @@ class STopupIn(BaseModel):
 
 class STopup(STopupIn):
     username: str
+
+
+class SPaymentIn(BaseModel):
+    order_id: int
+    username: str
+
+
+class SPaymentInDB(SPaymentIn):
+    ammount: Annotated[
+        Decimal,
+        PlainSerializer(float, when_used="json"),
+        Field(
+            description="The ammount of payment, with 2 decimal places",
+        ),
+    ]
+
+    sale_id: int
+
+
+class SPaymentOut(SPaymentInDB):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created: datetime

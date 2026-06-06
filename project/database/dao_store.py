@@ -3,18 +3,28 @@ from typing import Iterable
 from sqlalchemy.future import select
 
 
-from project.schemas_products import SProductSummaryOutAdmin, SProductSummaryOutByer
 from project.database.dao import BaseDAO
-from project.database.models import MNomenclature
-from project.database.models import MProduct
+from project.database.models_store import MProduct, MNomenclature, MSale, MSaleItem
 from project.database.dao import clear_table
-from project.database.models import Decimal, MNomenclature, func
+from decimal import Decimal
+from sqlalchemy import func
 from project.database.session import async_session
-from project.schemas_products import SNomenclatureIn, SNomenclatureOut, SProductIn, SProsuctDbOut, SProsuctDbOutFull
+from project.schemas_store import (
+    SProductSummaryOutAdmin,
+    SProductSummaryOutByer,
+    SNomenclatureIn,
+    SNomenclatureOut,
+    SProductIn,
+    SProsuctDbOut,
+    SProsuctDbOutFull,
+    SSaleIn,
+    SSaleOut,
+)
 
 
 class ProductDAO(BaseDAO[MProduct]):
     model = MProduct
+
 
 async def clear_nomenclature_table() -> None:
     await clear_table(MNomenclature)
@@ -71,28 +81,25 @@ async def get_nomenclatures(ids: list[int] | None = None) -> list[SNomenclatureO
     return nom_out
 
 
-
-
-async def get_products_by_id(ids: Iterable[int] | None = None) -> list[SProsuctDbOutFull]:
+async def get_products_by_id(
+    ids: Iterable[int] | None = None,
+) -> list[SProsuctDbOutFull]:
     async with async_session() as session:
-        stmt = (
-            select(
-                MProduct.id,
-                MProduct.nom_id,
-                MProduct.created,
-                MProduct.cost_price,
-                MProduct.remainder,
-                MNomenclature.name,
-                MNomenclature.description,
-                MNomenclature.markup,
-            )
-            .join(MNomenclature.products)
-        )
+        stmt = select(
+            MProduct.id,
+            MProduct.nom_id,
+            MProduct.created,
+            MProduct.cost_price,
+            MProduct.remainder,
+            MNomenclature.name,
+            MNomenclature.description,
+            MNomenclature.markup,
+        ).join(MNomenclature.products)
         if ids is not None:
             stmt = stmt.where(MProduct.id.in_(ids))
         pr_m_list_res = await session.execute(stmt)
         pr_m_list = pr_m_list_res.all()
-        pr_out_list = [SProsuctDbOutFull(**pr._asdict()) for pr in pr_m_list] # type: ignore
+        pr_out_list = [SProsuctDbOutFull(**pr._asdict()) for pr in pr_m_list]  # type: ignore
     return pr_out_list
 
 
@@ -120,15 +127,21 @@ async def add_products(products: Iterable[SProductIn]) -> list[SProsuctDbOutFull
 #         product_out = MProduct_to_SProsuctDbOut(pr_m)
 #     return product_out
 
+
 async def get_nomenclature_by_id(id: int) -> SNomenclatureOut | None:
     async with async_session() as session:
-        nom_m_res = await session.execute(select(MNomenclature).where(MNomenclature.id == id))
+        nom_m_res = await session.execute(
+            select(MNomenclature).where(MNomenclature.id == id)
+        )
         nom_m = nom_m_res.scalar_one_or_none()
         if nom_m is None:
             return None
         return MNomenclature_to_SNomenclatureOut(nom_m)
 
-async def get_products_summary_for_admin(ids: list[int] | None = None) -> list[SProductSummaryOutAdmin]:
+
+async def get_products_summary_for_admin(
+    ids: list[int] | None = None,
+) -> list[SProductSummaryOutAdmin]:
     """
     return products grouped by nom_id with sum of
     remainder quantity and maximum cost price
@@ -174,7 +187,9 @@ def SProductSummaryOutAdmin_to_SProductSummaryOutByer(
     )
 
 
-async def get_products_summary_for_byer(ids: list[int] | None = None) -> list[SProductSummaryOutByer]:
+async def get_products_summary_for_byer(
+    ids: list[int] | None = None,
+) -> list[SProductSummaryOutByer]:
     res_summ = await get_products_summary_for_admin(ids)
     res_summ_byer = [
         SProductSummaryOutAdmin_to_SProductSummaryOutByer(summ_admin_m)
@@ -182,3 +197,44 @@ async def get_products_summary_for_byer(ids: list[int] | None = None) -> list[SP
     ]
     return res_summ_byer
 
+
+# async def _add_sale_item(session: AsyncSession, item: SSaleIn) -> MSaleItem:
+#     sale_item_m = MSaleItem(
+#         nom_id=item.nom_id,
+#         quantity=item.quantity,
+#         byer_price=item.byer_price,
+#     )
+#     session.add(sale_item_m)
+#     await session.flush()
+#     return sale_item_m
+
+
+async def add_sale(sale: SSaleIn) -> SSaleOut:
+    """add sale to store, decrease remainder of products and increase booked of nomenclature
+    1. Get products by nom_id from sale items
+    2. If any product is not found, raise exception
+    5. Increase booked of nomenclature by quantity in sale item
+    6. Commit session
+    """
+    async with async_session() as session:
+        nom_ids = [item.nom_id for item in sale.items]
+        products_res = await session.execute(
+            select(MNomenclature).where(MNomenclature.id.in_(nom_ids))
+        )
+        product_noms = products_res.scalars().all()
+        if len(product_noms) != len(set(nom_ids)):
+            not_found_prods = set(nom_ids) - set(p.id for p in product_noms)
+            raise Exception(f"Products not found: {not_found_prods}")
+        sale_db_in = MSale(
+            order_id=sale.order_id,
+            items=[MSaleItem(**item.model_dump()) for item in sale.items],
+        )
+        prods_noms = {p.id: p for p in product_noms}
+        for s_item in sale.items:
+            prod = prods_noms[s_item.nom_id]
+
+            prod.booked += s_item.quantity
+        session.add(sale_db_in)
+        await session.flush()  # to get id of sale_db_in
+        await session.commit()
+    return SSaleOut.model_validate(sale_db_in)

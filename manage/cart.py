@@ -12,7 +12,7 @@ import asyncio
 from project.database.dao_cart import add_update_delete_cart_item, clear_cart_items_table, get_all_cards
 from project.database.dao_users import get_users_names
 from project.schemas_cart import SCartItemDbOut, SCartItemIn
-from project.schemas_products import (
+from project.schemas_store import (
     SProductSummaryOutByer,
 )
 from manage.utils import save_list_to_json_file

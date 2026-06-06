@@ -6,6 +6,8 @@ from pydantic import BaseModel, ConfigDict, Field, PlainSerializer
 from decimal import Decimal
 from typing import Annotated
 
+from project.schemas_orders import SOrderItem
+
 class SNomId(BaseModel):
     nom_id: int
 
@@ -100,3 +102,31 @@ class SProductSummaryOutByer(SProductSummaryOutBase):
             description="selling price"
             )
         ]
+
+class SSaleItemOut(BaseModel):
+    nom_id: int
+    quantity: int
+    byer_price: Annotated[
+        Decimal,
+        PlainSerializer(float, when_used='json'),
+        Field(
+            description="byer price of product in that sale"
+            )
+        ]
+
+
+class SSaleBase(BaseModel):
+    order_id: int
+
+class SSaleIn(SSaleBase):
+    items: list[SOrderItem]
+
+class SSaleOut(SSaleBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    created: datetime
+    id: int
+    # order_id: int
+    # items: list[SSaleItemOut]
+
+

@@ -10,7 +10,7 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-from project.database.models import MUser
+from project.database.models_auth import MUser
 
 
 # revision identifiers, used by Alembic.
