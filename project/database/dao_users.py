@@ -80,7 +80,7 @@ class UserDAO(BaseDAO[MUser]):
         )
         if not perm:
             logger.error(f"Разрешение {permission.name} не найдено.")
-            return user
+            raise ValueError(f"Разрешение {permission.name} не найдено`.")
 
         if perm in user.permissions:
             logger.warning(
@@ -90,6 +90,7 @@ class UserDAO(BaseDAO[MUser]):
 
         user.permissions.append(perm)
         await self._session.flush()
+        user.permissions
         return user
 
     async def add_permissions_to_user(
@@ -267,5 +268,10 @@ async def applay_payment(payment: SPaymentInDB) -> SPaymentOut:
         payment_out = SPaymentOut.model_validate(payment_in)
         await session.commit()
     return payment_out
-        # user_m = user_m.scalar_one()
 
+async def add_permission_to_user(username: str, permission: Permission) -> SUserOut:
+    async with async_session() as session:
+        user_m = await UserDAO(session).add_permission_to_user(username, SPermissionIn(name=permission.name))
+        await session.commit()
+        ps: list[str] = [p.name.name for p in user_m.permissions]
+        return SUserOut(**user_m.to_dict(), permissions=ps)

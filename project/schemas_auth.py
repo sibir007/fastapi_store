@@ -40,6 +40,7 @@ class SUserWithoutPermission(SUserBase):
 
 
 class SUserOut(SUserWithoutPermission):
+    model_config = ConfigDict(from_attributes=True)
 
     permissions: list[str] = []
 
