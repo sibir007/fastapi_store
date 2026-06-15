@@ -12,7 +12,7 @@ sudo docker exec -it redis_container redis-cli
 sudo docker compose up --build --watch  store
 sudo docker compose up --watch  store
 sudo docker compose logs -f db # connect to cervise logs
-
+docker compose -f "compose copy.yml" config
 
 ```
 

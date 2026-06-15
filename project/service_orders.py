@@ -21,8 +21,7 @@ from project.schemas_cart import SCart, SUserCart
 from project.schemas_orders import SOrderId, SOrderIn, SOrderItem, SOrderOut
 from project.schemas_store import SProductSummaryOutByer
 
-from project.service import service
-from project.broker import broker
+from project.service import service, broker
 
 
 from project.scheduler_calable import set_order_canceled_service_reqvest, test_service_orders
@@ -34,6 +33,7 @@ from project.config import settings
 
 ORDER_VALIDITY_SEC = settings.ORDER_VALIDITY_SEC
 
+service = service
 
 class SCartProductsOrderConvert(BaseModel):
     order: SOrderOut
@@ -282,16 +282,6 @@ async def get_orders_handler(username: SUsername, logger: Logger) -> SOrdersServ
 #             )
 #         )
 #     return SVerifyReqversBrokerResult(resoult=SBool(result=bool(noms)))
-
-
-@broker.subscriber(list="test-service-orders")
-async def test_handler(msg: str, logger: Logger) -> None:
-    logger.info(f"test message: {msg}")
-
-
-@service.after_startup
-async def test():
-    await broker.publish("test startup", list="test-service-orders")
 
 
 

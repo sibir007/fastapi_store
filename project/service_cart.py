@@ -3,11 +3,10 @@ from fastapi import status
 from faststream import Logger
 
 
-from project.broker import broker
 from project.database.dao_cart import add_update_delete_cart_item, clear_cart, get_cart, restore_cart
 from project.lib_services import verify_product_service_request, verify_user_service_request
 from project.schemas import SBool, SUsername
-from project.service import service
+from project.service import service, broker
 from project.schemas_broker import (
     SServiceExeption,
     SCartServiceResult,
@@ -19,6 +18,7 @@ from project.schemas_broker import SVerifyReqversServiceResult
 # from project.schemas_auth import SV
 # from project.service_auth import SVerifyUserBrokerResult
 # from project.broker_router import broker, broker_router
+service = service
 
 
 @broker.subscriber(list="clear-cart")
@@ -114,11 +114,3 @@ async def add_cart_item_handler(
     return SCatrItemServiceResoult(resoult=cart)
 
 
-@broker.subscriber(list="test")
-async def base_handler(msg: str, logger: Logger) -> None:
-    logger.info(f"test message: {msg}")
-
-
-@service.after_startup
-async def test():
-    await broker.publish("test startup", list="test")

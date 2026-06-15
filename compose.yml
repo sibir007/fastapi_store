@@ -14,21 +14,17 @@ services:
     image: postgres:18.3
     container_name: db
     restart: always
-    env_file:
-      - ./.env
-      # environment:
-      # POSTGRES_USER: user
-      # PGUSER: app
-      # POSTGRES_PASSWORD: pass
-      # POSTGRES_DB: app
-      # POSTGRES_USER: ${POSTGRES_USER}  
-      # POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
-      # POSTGRES_DB: ${POSTGRES_DB} 
-      # PGDATA: /var/lib/postgresql/data/pgdata
+    # env_file:
+    #   - ./.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data/pgdata
+      - pgdata:${PGDATA}
     healthcheck:
 
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
@@ -123,14 +119,14 @@ services:
         condition: service_healthy
       db:
         condition: service_healthy
-      # - service_scheduler
+      # - scheduler_servece
 
 
 
-  service_scheduler:
-    container_name: service_scheduler
+  scheduler_servece:
+    container_name: scheduler_servece
     build: .
-    command: uvicorn project.servece_scheduler:app --host localhost --port "${SCHEDULER_SERV_PORT}"
+    command: uvicorn project.scheduler_servece:app --host localhost --port "${SCHEDULER_SERV_PORT}"
     env_file: ".env"
     network_mode: host
     develop:
@@ -151,13 +147,7 @@ services:
     container_name: api_scheduler
     build: .
     command: uvicorn project.api_scheduler:app --host 0.0.0.0 --port "${SCHEDULER_API_PORT}"
-    # command: uvicorn project.auth_api:app --host 0.0.0.0 --reload
-    # volumes:
-    #   - ./project:/usr/src/app
     env_file: ".env"
-    # # environment:
-    # #   - CELERY_BROKER_URL=redis://redis:6379/0
-    # #   - CELERY_RESULT_BACKEND=redis://redis:6379/0
     network_mode: host
     develop:
       watch:
@@ -167,7 +157,7 @@ services:
         - action: rebuild
           path: requirements.txt
     depends_on:
-      - service_scheduler
+      - scheduler_servece
       # - queue:
       #     condition: service_healthy
 

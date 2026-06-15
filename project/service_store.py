@@ -17,10 +17,7 @@ from project.schemas_broker import (
 from project.schemas_cart import SCart
 from project.schemas_store import SNomId, SProductSummaryOutByer, SSaleIn
 
-from project.service import service
-from project.broker import broker
-
-# from project.broker_router import broker, broker_router
+from project.service import service, broker
 
 
 @broker.subscriber(list="products")

@@ -1,0 +1,60 @@
+services:
+
+  broker_test:
+    image: redis:8.6.2
+    container_name: broker_test
+    ports:
+      - "${TEST_REDIS_PORT}:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+
+  db_test:
+    image: postgres:18.3
+    container_name: db_test
+    restart: always
+    env_file: ".env"
+    environment:
+      POSTGRES_USER: ${TEST_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${TEST_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${TEST_POSTGRES_DB}
+      # PGDATA: ${PGDATA}
+    ports:
+      - "${TEST_POSTGRES_PORT}:5432"
+    # volumes:
+    #   - pgdata:${PGDATA}
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${TEST_POSTGRES_USER} -d ${TEST_POSTGRES_DB}" ]
+
+  scheduler_servece:
+    container_name: scheduler_servece
+    build: .
+    command: uvicorn project.scheduler_servece:app --host localhost --port "${TEST_SCHEDULER_SERV_PORT}"
+    environment:
+      TESTS_CONFIG: True
+    env_file: ".env"
+    network_mode: host
+    depends_on:
+      broker_test:
+        condition: service_healthy
+      db_test:
+        condition: service_healthy
+
+  service_allin:
+    container_name: service_allin
+    build: .
+    command: faststream run project.service_allin:service
+    environment:
+      TESTS_CONFIG: True
+    env_file: ".env"
+    network_mode: host
+    develop:
+    depends_on:
+      broker_test:
+        condition: service_healthy
+      db_test:
+        condition: service_healthy
+      scheduler_servece:
+        condition: service_started
+
+

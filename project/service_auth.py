@@ -34,14 +34,14 @@ from project.schemas_auth import (
     SUserInDB,
     SUserOut,
 )
-from project.broker import broker
 from project.schemas_orders import SOrderId
-from project.service import service
+from project.service import service, broker
 
 import logging
 
 logger = logging.getLogger(__name__)
 
+service = service
 
 @broker.subscriber(list="auth")
 async def auth_handler(auth_data: AuthUserData, logger: Logger) -> SUserServiceResult:
@@ -326,12 +326,3 @@ async def user_register_handler(
         )
     return SUserServiceResult(resoult=user_out)
 
-
-@broker.subscriber(list="test")
-async def base_handler(msg: str, logger: Logger) -> None:
-    logger.info(f"test message: {msg}")
-
-
-@service.after_startup
-async def test():
-    await broker.publish("test startup", list="test")
