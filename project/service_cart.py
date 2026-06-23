@@ -65,9 +65,9 @@ async def get_cart_handler(cart_req: SUsername, logger: Logger) -> SCartServiceR
     logger.info(f"get cart handler, username: {cart_req.username}")
 
     # get_user_by_name
-    broker_resoult = await verify_user_service_request(cart_req.username, broker, logger)  # type: ignore
-    if broker_resoult.exeption:  # type: ignore
-        return SCartServiceResult(exeption=broker_resoult.exeption)  # type: ignore
+    broker_resoult = await verify_user_service_request(cart_req.username, logger)
+    if broker_resoult.exeption:
+        return SCartServiceResult(exeption=broker_resoult.exeption)
     try:
         cart = await get_cart(cart_req)
     except Exception as e:
@@ -91,12 +91,12 @@ async def add_cart_item_handler(
     )
 
     verify_user_broker_resoult = await verify_user_service_request(
-        item.username, broker, logger
+        item.username, logger
     )
     if verify_user_broker_resoult.exeption:
         return SCatrItemServiceResoult(exeption=verify_user_broker_resoult.exeption)
     verify_product_broker_resoult = await verify_product_service_request(
-        item.nom_id, broker, logger
+        item.nom_id, logger
     )
     if verify_product_broker_resoult.exeption:
         return SCatrItemServiceResoult(exeption=verify_product_broker_resoult.exeption)

@@ -35,7 +35,13 @@ class SUserInDB(SUserBase):
 class SUserWithoutPermission(SUserBase):
     model_config = ConfigDict(from_attributes=True)
 
-    balance: float
+    balance: Annotated[
+        Decimal,
+        PlainSerializer(float, when_used="json"),
+        Field(
+            description="The balance, with 2 decimal places",
+        ),
+    ]
     disabled: bool = False
 
 

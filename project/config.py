@@ -3,23 +3,24 @@ from pydantic import Field
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
-TESTS_CONFIG = os.environ.get("TESTS_CONFIG", False)
+CONFIG_MODE = os.environ.get("CONFIG_MODE", "DEVELOTMENT")
 ENV_FILE = ".env"
 
 # for load env vars when run out of docker compose
 ch = load_dotenv(ENV_FILE)
 
-print(f"TESTS_CONFIG = {TESTS_CONFIG}, load_dotenv: {ch}")
+print(f"CONFIG_MODE = {CONFIG_MODE}, load_dotenv: {ch}")
 
 # print(os.environ)
 
 
 class Settings(BaseSettings):
 
-    TESTS_CONFIG: bool
+    # TESTS_CONFIG: bool
 
     REDIS_HOST: str
     REDIS_PORT: str
+    # REDIS_PORT: str = Field(alias="TEST_REDIS_PORT")
 
     POSTGRES_HOST: str
     POSTGRES_PORT: int
@@ -54,6 +55,7 @@ class Settings(BaseSettings):
 class TestSettings(Settings):
     
     REDIS_HOST: str = Field(alias="TEST_REDIS_HOST")
+    # REDIS_PORT: str
     REDIS_PORT: str = Field(alias="TEST_REDIS_PORT")
 
     POSTGRES_HOST: str = Field(alias="TEST_POSTGRES_HOST")
@@ -72,8 +74,19 @@ class TestSettings(Settings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(alias="TEST_ACCESS_TOKEN_EXPIRE_MINUTES")
     ORDER_VALIDITY_SEC: int = Field(alias="TEST_ORDER_VALIDITY_SEC")
 
+    # @property
+    # def REDIS_URL(self) -> str:
+    #     return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+
+    # @property
+    # def POSTGRES_URL(self) -> str:
+    #     return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+
+    # @property
+    # def AUTH_API_URL(self) -> str:
+    #     return f"{self.AUTH_API_SCHEME}://{self.AUTH_API_HOST}:{self.AUTH_API_PORT}/{self.AUTH_API_PATH}"
 
 
-settings = Settings()  if not TESTS_CONFIG else TestSettings() # type: ignore
+settings = TestSettings()  if CONFIG_MODE == "TESTS" else Settings() # type: ignore
 
 print(settings.model_dump_json())

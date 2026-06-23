@@ -6,7 +6,7 @@ from typing import Awaitable, Callable
 from fastapi import FastAPI
 from fastapi import Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from project.broker_router import broker_router
+# from project.broker_router import broker_router
 
 
 
@@ -37,4 +37,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(broker_router)
+# app.include_router(broker_router)

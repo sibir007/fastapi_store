@@ -1,10 +1,16 @@
 from project.api import app
 from project import (
-    api_admin,  # type: ignore 
-    api_auth,  # type: ignore
-    api_cart,  # type: ignore
-    api_orders, # type: ignore
-    api_store # type: ignore
+    api_admin, 
+    api_auth,
+    api_cart,
+    api_orders,    
+    api_store  
     )
+
+api_admin = api_admin
+api_auth = api_auth
+api_cart = api_cart
+api_orders = api_orders
+api_store = api_store
 
 app = app

@@ -104,7 +104,7 @@ async def create_order_handler(
     """
 
     # 1. Get cart and verify user by username
-    cart_servese_resoult = await get_cart_service_request(username, broker, logger)
+    cart_servese_resoult = await get_cart_service_request(username, logger)
     if cart_servese_resoult.exeption:
         return SOrderServiceResult(exeption=cart_servese_resoult.exeption)
 
@@ -126,7 +126,7 @@ async def create_order_handler(
 
     # 2. Get products summary for byer
     products_service_resoult = await get_products_for_order_service_request(
-        cart, broker, logger
+        cart, logger
     )
     if products_service_resoult.exeption:
         return SOrderServiceResult(exeption=products_service_resoult.exeption)

@@ -195,7 +195,7 @@ async def payment_handler(payment: SPaymentIn, logger: Logger) -> SPaymentServic
 
     # 3. Verify that the order exists.
     order_servese_resoult: SOrderServiceResult = await get_order_service_request(
-        SOrderId(id=payment.order_id), broker, logger
+        SOrderId(id=payment.order_id), logger
     )
     if order_servese_resoult.exeption:
         logger.error(
@@ -249,7 +249,7 @@ async def payment_handler(payment: SPaymentIn, logger: Logger) -> SPaymentServic
         )
     # 7. Fulfilling a sale in a store
     sale_servese_resoult: SSaleInStoreServiceResult = (
-        await sale_in_store_service_request(order, broker, logger)
+        await sale_in_store_service_request(order, logger)
     )
     if sale_servese_resoult.exeption:
         logger.error(
@@ -269,7 +269,7 @@ async def payment_handler(payment: SPaymentIn, logger: Logger) -> SPaymentServic
             )
         )
     set_order_state_paid_resoult = await set_order_state_paid_service_request(
-        SOrderId(id=payment.order_id), broker, logger
+        SOrderId(id=payment.order_id), logger
     )
     if set_order_state_paid_resoult.exeption:
         logger.error(

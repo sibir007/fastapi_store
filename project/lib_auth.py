@@ -42,7 +42,7 @@ def get_password_hash(password: str) -> str:
     return password_hash.hash(password)
 
 
-def create_access_token(
+def _create_access_token(
     data: dict[str, Any], expires_delta: timedelta, secret_key: str, algorithm: str
 ) -> str:
     to_encode = data.copy()
@@ -51,8 +51,15 @@ def create_access_token(
     encoded_jwt: str = jwt.encode(to_encode, secret_key, algorithm=algorithm)  # type: ignore
     return encoded_jwt
 
+def create_access_token(username: str, scopes: list[str]) -> str:
+    return _create_access_token(
+        data={"sub": username, "scope": " ".join(scopes)},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+        secret_key=SECRET_KEY,
+        algorithm=ALGORITHM,
+    )
 
-def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
+def _verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
 
     authenticate_value = "Bearer"
     credentials_exception = HTTPException(
@@ -74,12 +81,15 @@ def verifi_token(token: str, secret_key: str, algorithm: str) -> TokenData:
 
     return token_data
 
+def verifi_token(token: str) -> TokenData:
+    return _verifi_token(token, SECRET_KEY, ALGORITHM)
+
 
 async def verifiy_and_get_token_data(
     security_scopes: SecurityScopes, token: Annotated[str, Depends(oauth2_scheme)]
 ) -> TokenData:
 
-    token_data: TokenData = verifi_token(
+    token_data: TokenData = _verifi_token(
         token, secret_key=SECRET_KEY, algorithm=ALGORITHM
     )
     for scope in security_scopes.scopes:

@@ -31,7 +31,7 @@ services:
     build: .
     command: uvicorn project.scheduler_servece:app --host localhost --port "${TEST_SCHEDULER_SERV_PORT}"
     environment:
-      TESTS_CONFIG: True
+      CONFIG_MODE: "TESTS"
     env_file: ".env"
     network_mode: host
     depends_on:
@@ -45,7 +45,7 @@ services:
     build: .
     command: faststream run project.service_allin:service
     environment:
-      TESTS_CONFIG: True
+      CONFIG_MODE: "TESTS"
     env_file: ".env"
     network_mode: host
     develop:

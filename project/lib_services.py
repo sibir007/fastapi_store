@@ -10,33 +10,35 @@ from project.schemas_broker import (
     SVerifyReqversServiceResult,
 )
 
+from project.schemas_cart import SCart, SUserCart
+from project.schemas_orders import SOrderOut
+from project.schemas_store import SNomId, SSaleIn
+from project.schemas_orders import SOrderId
+from project.broker import get_started_broker, broker
 
 from fastapi import status
 from faststream import Logger
-from faststream.redis import RedisBroker, RedisChannelMessage
+from faststream.redis import RedisChannelMessage
 from pydantic import BaseModel
 
 
 from typing import Any
 
-from project.schemas_cart import SCart, SUserCart
-from project.schemas_orders import SOrderOut
-from project.schemas_store import SNomId, SSaleIn
 import logging
 
-from project.schemas_orders import SOrderId
 
 logger = logging.getLogger(__name__)
 
 
 async def get_service_resoult[T](
-    broker: RedisBroker,
     req: BaseModel,
     queue_name: str,
     broker_result_class: type[T],
     logger: Logger,
 ) -> T:
 
+
+    # async with get_started_broker() as broker:
     try:
         mess: RedisChannelMessage = await broker.request(req, list=queue_name)
         res_: None | dict[str, Any] = await mess.decode()
@@ -82,56 +84,55 @@ async def get_service_resoult[T](
 
 
 async def get_service_resoult_or_raise_http_exaption[T](
-    broker: RedisBroker,
     req: BaseModel,
     queue_name: str,
     broker_result_class: type[SServiceResoultBase[T]],
 ) -> T:
 
-    try:
-        broker_response = await broker.request(req, list=queue_name)
-        broker_resoult: dict[str, Any] | None = await broker_response.decode()
-        # mess: RedisChannelMessage = await broker.request(req, list=queue_name)
-        # res_: None | dict[str, Any] = await mess.decode()
-        # logger.error(f"broker res: {broker_resoult}, class {broker_result_class}")
-    except Exception as e:
-        # raise e
-        logger.error(
-            f"exeptionon in get_service_resoult_or_raise_http_exaption: {e.__str__()}"
-        )
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(detail=e.__str__())
+    async with get_started_broker() as broker:
+        try:
+            broker_response = await broker.request(req, list=queue_name)
+            broker_resoult: dict[str, Any] | None = await broker_response.decode()
+            # mess: RedisChannelMessage = await broker.request(req, list=queue_name)
+            # res_: None | dict[str, Any] = await mess.decode()
+            # logger.error(f"broker res: {broker_resoult}, class {broker_result_class}")
+        except Exception as e:
+            # raise e
+            logger.error(
+                f"exeptionon in get_service_resoult_or_raise_http_exaption: {e.__str__()}"
+            )
+            raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(detail=e.__str__())
 
-    if broker_resoult is None:
-        logger.error(
-            f"exeptionon in get_service_resoult_or_raise_http_exaption res None"
-        )
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(detail="broker_sesoult None")
-    broker_resoult_obj = broker_result_class(**broker_resoult)
-    if broker_resoult_obj.exeption:
-        logger.error(
-            f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.exeption ditails: {broker_resoult_obj.exeption.detailes}"
-        )
-        raise_exaption(
-            broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes
-        )
+        if broker_resoult is None:
+            logger.error(
+                f"exeptionon in get_service_resoult_or_raise_http_exaption res None"
+            )
+            raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(detail="broker_sesoult None")
+        broker_resoult_obj = broker_result_class(**broker_resoult)
+        if broker_resoult_obj.exeption:
+            logger.error(
+                f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.exeption ditails: {broker_resoult_obj.exeption.detailes}"
+            )
+            raise_exaption(
+                broker_resoult_obj.exeption.code, broker_resoult_obj.exeption.detailes
+            )
 
-    res = broker_resoult_obj.resoult
-    if res is None:  # should not happen, but just in case
-        logger.error(
-            f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.resoult None"
-        )
-        raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
-            "Internal server error during user retrieval, incompatible service state"
-        )
+        res = broker_resoult_obj.resoult
+        if res is None:  # should not happen, but just in case
+            logger.error(
+                f"exeptionon in get_service_resoult_or_raise_http_exaption broker_resoult_obj.resoult None"
+            )
+            raise HTTP_500_INTERNAL_SERVER_ERROR_EXCEPTION(
+                "Internal server error during user retrieval, incompatible service state"
+            )
 
     return res
 
 
 async def verify_product_service_request(
-    nom_id: int, broker: RedisBroker, logger: Logger
-):
+    nom_id: int, logger: Logger
+) -> SVerifyReqversServiceResult:
     broker_resoult: SVerifyReqversServiceResult = await get_service_resoult(
-        broker,
         SNomId(nom_id=nom_id),
         "verify-product",
         SVerifyReqversServiceResult,
@@ -143,11 +144,9 @@ async def verify_product_service_request(
 
 async def verify_user_service_request(
     username: str,
-    broker: RedisBroker,
     logger: Logger,
 ) -> SVerifyReqversServiceResult:
     broker_resoult: SVerifyReqversServiceResult = await get_service_resoult(
-        broker,
         SUsername(username=username),
         "verify-user",
         SVerifyReqversServiceResult,
@@ -158,10 +157,9 @@ async def verify_user_service_request(
 
 
 async def clear_cart_service_request(
-    cart: SUserCart, broker: RedisBroker, logger: Logger
+    cart: SUserCart, logger: Logger
 ) -> SVerifyReqversServiceResult:
     broker_resoult: SVerifyReqversServiceResult = await get_service_resoult(
-        broker,
         cart,
         "clear-cart",
         SVerifyReqversServiceResult,
@@ -172,10 +170,9 @@ async def clear_cart_service_request(
 
 
 async def restore_cart_service_request(
-    cart: SUserCart, broker: RedisBroker, logger: Logger
+    cart: SUserCart, logger: Logger
 ) -> SVerifyReqversServiceResult:
     broker_resoult: SVerifyReqversServiceResult = await get_service_resoult(
-        broker,
         cart,
         "restore-cart",
         SVerifyReqversServiceResult,
@@ -186,10 +183,9 @@ async def restore_cart_service_request(
 
 
 async def get_order_service_request(
-    order_id: SOrderId, broker: RedisBroker, logger: Logger
+    order_id: SOrderId, logger: Logger
 ) -> SOrderServiceResult:
     broker_resoult: SOrderServiceResult = await get_service_resoult(
-        broker,
         order_id,
         "get-order",
         SOrderServiceResult,
@@ -200,10 +196,9 @@ async def get_order_service_request(
 
 
 async def set_order_state_paid_service_request(
-    order_id: SOrderId, broker: RedisBroker, logger: Logger
+    order_id: SOrderId, logger: Logger
 ) -> SOrderServiceResult:
     broker_resoult: SOrderServiceResult = await get_service_resoult(
-        broker,
         order_id,
         "set-order-state-paid",
         SOrderServiceResult,
@@ -214,10 +209,9 @@ async def set_order_state_paid_service_request(
 
 
 async def get_cart_service_request(
-    username: SUsername, broker: RedisBroker, logger: Logger
+    username: SUsername, logger: Logger
 ) -> SCartServiceResult:
     broker_resoult: SCartServiceResult = await get_service_resoult(
-        broker,
         username,
         "get-cart",
         SCartServiceResult,
@@ -228,10 +222,9 @@ async def get_cart_service_request(
 
 
 async def get_products_for_order_service_request(
-    cart: SCart, broker: RedisBroker, logger: Logger
+    cart: SCart, logger: Logger
 ) -> SProductsSummaryOutByerServiceResoult:
     broker_resoult: SProductsSummaryOutByerServiceResoult = await get_service_resoult(
-        broker,
         cart,
         "products-for-order",
         SProductsSummaryOutByerServiceResoult,
@@ -241,10 +234,9 @@ async def get_products_for_order_service_request(
 
 
 async def sale_in_store_service_request(
-    order: SOrderOut, broker: RedisBroker, logger: Logger
+    order: SOrderOut, logger: Logger
 ) -> SSaleInStoreServiceResult:
     broker_resoult: SSaleInStoreServiceResult = await get_service_resoult(
-        broker,
         SSaleIn(order_id=order.id, items=order.items),
         "sale-in-store",
         SSaleInStoreServiceResult,

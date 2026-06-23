@@ -15,10 +15,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # from sqlalchemy.orm import selectinload
 
+from project.database.models_auth import MBase
 from project.database.models_base import MBase
 import logging
 
-from project.database.session import async_session, engine
+from project.database.models_cart import MBase
+from project.database.models_order import MBase
+from project.database.models_store import MBase
+from project.database.session import async_session
+
 
 logger = logging.getLogger(__name__)
 
@@ -187,15 +192,6 @@ class BaseDAO(Generic[T]):
             raise
 
 
-async def init_db():
-    """
-    Drop and create db
-    """
-    async with engine.begin() as connection:
-        await connection.run_sync(MBase.metadata.drop_all)
-        await connection.run_sync(MBase.metadata.create_all)
-
-
 async def clear_table(table_type: type[MBase]) -> None:
     """clear table"""
 
@@ -203,6 +199,8 @@ async def clear_table(table_type: type[MBase]) -> None:
         statement = delete(table_type)
         await session.execute(statement)
         await session.commit()
+
+
 
 
 
