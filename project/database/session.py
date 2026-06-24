@@ -7,7 +7,11 @@ from project.config import settings
 
 
 
-engine = create_async_engine(url=settings.POSTGRES_URL, echo=True)
+engine = create_async_engine(
+    url=settings.POSTGRES_URL, 
+    echo=True,
+    connect_args={"prepared_statement_cache_size": 0}
+    )
 async_session: async_sessionmaker[AsyncSession] = async_sessionmaker(engine, expire_on_commit=False)
 
 async def get_session_with_commit() -> AsyncGenerator[AsyncSession, None]:
